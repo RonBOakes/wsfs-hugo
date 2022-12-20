@@ -1,0 +1,5 @@
+AuthUserFile /var/www/sj2018.bid/html/hugo/admin/.htpasswd
+AuthName "Worldcon 76 Hugo Award Administration"
+AuthType Basic
+require valid-user 
+

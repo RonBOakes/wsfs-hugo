@@ -1,0 +1,94 @@
+legend {
+	margin:0;
+	border:1px solid green;
+	padding:.2em;
+    padding-right: 1em
+	white-space:normal;
+	word-break:break-word;
+	text-align:justify;
+	background-color:#c9e5e2;
+	font-size:11pt;
+}
+
+form {
+	padding:1em 0;
+	margin:0;
+	border-radius:5px;
+}
+
+fieldset {
+	padding:2em;
+	margin:1em;
+	white-space:normal;
+	word-break:break-word;
+}
+
+label {
+	float:left;
+	margin-right:.5em;
+	padding-top:.2em;
+}
+
+input {
+	font-size:12pt;
+}
+
+#watermark {
+	background-image:url(/images/logo.png);
+	background-repeat:no-repeat;
+	background-position:center center;
+	opacity:.5;
+}
+
+#defaultCountdown {
+	width:184px;
+	height:45px;
+	text-align:center;
+}
+
+.rank {
+	width:50px;
+}
+
+.catalog {
+	font-size:16pt;
+    border-spacing: 0;
+    border-collapse: collapse;
+    padding: 15px;
+}
+
+.hugo {
+	text-align:justify;
+	font-size:14pt;
+}
+
+.instructions {
+	font-size:10pt;
+}
+
+.title {
+	font-size:24pt;
+	text-align:center;
+}
+
+.messageBox {
+	display:none;
+	margin:0;
+	border:1px solid green;
+	padding:.2em;
+	text-align:left;
+	background-color:#c9e5e2;
+}
+
+.PINStatusBox {
+	display:none;
+	margin:0;
+	border:1px solid green;
+	padding:.2em;
+	text-align:left;
+	background-color:#c9e5e2;
+}
+
+.template {
+	display:none;
+}
