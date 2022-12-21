@@ -22,7 +22,14 @@ require_once('./db_config.php');
 */
 class database
 {
+  /**
+    Database handle for accessing the mysql database through mysqli.
+  */
   protected static $db;
+  
+  /**
+    Root name of the database.
+  */
   protected static $dbName;
 
 /**
@@ -1750,6 +1757,11 @@ EOT;
     return $memberList;
   }
 
+/**
+  Gets the next record that needs to have an email sent out.
+  @param $mailing A value from 1 to 3 that indicates which of three mailings is being sent out.
+  @return A hash containing the information contained in the internal membership table needed to send out the email.
+*/
   function getNextUnmailed($mailing)
   {
     $sql = <<<EOT
@@ -1799,6 +1811,11 @@ EOT;
     return false;
   }
 
+/**
+  Mark that the specified individual has had an email sent out during the given round of emails.
+  @param $id The key for the internal membership table.
+  @param $mailing A value from 1 to 3 that indicates which of three mailings is being sent out.
+*/
     function markMailed($id,$mailing)
     {
       $sql = "UPDATE nomination_pin_email_info\n";
@@ -1821,6 +1838,14 @@ EOT;
       $query->execute();
     }
 
+/**
+  Updates or adds a record in the internal membership table.  In this table the member ID must be unique in addition to the PIN.
+  @param $first_name The first (given) name of the individual
+  @param $second_name The second (family) name of the individual
+  @param $member_id The member ID as assigned by the administering Worldcon
+  @param $pin The unique PIN assigned by the administring Worldcon
+  @param $source The source of this record.  This is used during nominations to distinguish members of the previous Worldcon from members of the administerng Worldcon (and in the past the subsequent Worldcon as well)
+*/
     function addUpdatePinEmailRecord($first_name, $second_name, $member_id, $email, $pin, $source)
     {
 //      print "email: $email\t";
@@ -1873,6 +1898,14 @@ EOT;
       $query->close();
     }
 
+/**
+  Updates or adds a vote for a given member, on a given finalist in a given category.
+  @param $memberId The unique ID, the unique Hugo PIN, for the voter.
+  @param $categoryId The database key for the Hugo Award Category being voted on.
+  @param $shortlistId The database key for the Finalist being voted on.
+  @param $rank The rank that this voter is assigning to this finalist.
+  @return An HTML/XML comment string explainging the operations being carried out.
+*/
     function addUpdateVote($memberId,$categoryId,$shortlistId,$rank)
     {
       $return = "<!-- Adding Vote: $memberId, $categoryId, $shortlistId, $rank -->\n";
@@ -1929,6 +1962,13 @@ EOT;
       return $return;
     }
 
+/**
+  Deletes a voters vote for a given category and finalist.
+  @param $memberId The unique ID, the unique Hugo PIN, for the voter.
+  @param $categoryId The database key for the Hugo Award Category being voted on.
+  @param $shortlistId The database key for the Finalist being voted on.
+  @return An HTML/XML comment string explainging the operations being carried out.
+*/
     function deleteVote($memberId,$categoryId,$shortlistId)
     {
       $sql = <<<EOT
@@ -1963,6 +2003,12 @@ EOT;
       return;
     }
 
+/**
+  Gets the votes for a given category and voter
+  @param $categoryId The database key for the Hugo Award Category being voted on.
+  @param $memberId The unique ID, the unique Hugo PIN, for the voter.
+  @return A hash mapping the shortlist database key to the rank.
+*/
     function getVotes($categoryId,$voterId)
     {
       $sql = <<<EOT
@@ -1987,6 +2033,11 @@ EOT;
       return $votes;
     }
 
+/**
+  Get the list of files available for the Hugo Voter's Packet
+  @param $fetchAll If true, all of the files will be returned, otherwise only thoes with show_on_packet_page set to 1 will be returned. Optional
+  @return An array of hashes containing the Information on the packet files.
+*/
     function getPacketFileList($fetchAll=false)
     {
       $sql = <<<EOT
@@ -2028,6 +2079,11 @@ EOT;
       return $packetFileList;
     }
 
+/**
+  Lookup information on a Hugo Voter Packet file based on its downlad name.
+  @param $downloadName The download name of the file
+  @return The database key (file ID) for the packet file.
+*/
     function reversePacketLookup($downloadName)
     {
       $sql = <<<EOT
@@ -2049,6 +2105,13 @@ EOT;
       }
     }
 
+/**
+  Log that the specified member has downloaded a Hugo Voter Packet file.
+  @param $memberId The Unique Member ID (Hugo Voter PIN).
+  @param $downloadIp The IP address (IPV4) used to download the file as reported by the web server.
+  @param $fileId The database key for the Voter Packet File Information.
+  @param $userAgent The user agent information from the web server.
+*/
     function logPacketDownload($memberId,$downloadIp,$fileId,$userAgent)
     {
       $sql = <<<EOT
@@ -2064,6 +2127,10 @@ EOT;
       $query->close();
     }
 
+/**
+  Get the count of downloads for the Hugo Voter Packet files - specifically the total number of downloads, the number of unique members that downloaded files, and the number of unique IP addresses where files were dowloaded to.
+  @return A hash containing the download count information.
+*/
     function getDownloadCounts()
     {
       $sql = <<<EOT
@@ -2085,6 +2152,10 @@ EOT;
       return $counts;
     }
 
+/**
+  Get the count of downloads for the Hugo Voter Packet files - specifically the total number of downloads, the number of unique members that downloaded files, and the number of unique IP addresses where files were dowloaded to - grouped by user agent.
+  @return An array of hashes containing the download count information, one for each identified user agent.
+*/
     function getDownloadCountsByUserAgent()
     {
       $sql = <<<EOT
@@ -2113,6 +2184,10 @@ EOT;
       return $counts;
     }
 
+/**
+  Get the count of downloads for the Hugo Voter Packet files - specifically the total number of downloads, the number of unique members that downloaded files, and the number of unique IP addresses where files were dowloaded to - grouped by date, as defined by "America/New_York" or Eastern Daylight Time.
+  @return An array of hashes containing the download count information, one for day.
+*/
     function getDownloadCountsByDay()
     {
       date_default_timezone_set('America/New_York');
@@ -2153,6 +2228,11 @@ EOT;
 
       return $counts;
     }
+
+/**
+  Get the number of unique voters, and the number of unique IPs (IPV4) where votes were cast.
+  @return A hash containing the vote count information.
+*/
     function getVoteCounts()
     {
       $sql = <<<EOT
@@ -2172,6 +2252,10 @@ EOT;
       return $counts;
     }
 
+/**
+  Get the number of unique voters, and the number of unique IPs (IPV4) where the votes were cast grouped by days (per system setting).
+  @return An array of hashes containing the vote count information for each day.
+*/
     function getVoteCountsByDay()
     {
       date_default_timezone_set('America/New_York');
@@ -2213,6 +2297,12 @@ EOT;
       return $counts;
     }
 
+/**
+  Gets the list of approved voters for a given category
+  
+  @param $categoryId The database key for the Hugo Award Category.
+  @return An array containing the unique Member IDs (Hugo Award PINs) for the members who voted in this category and have their ballots marked as approved.
+*/
     function getVoters($categoryId)
     {
       $sql = <<<EOT
@@ -2237,6 +2327,12 @@ EOT;
       return $voters;
     }
 
+/**
+  Gets the remaining voters in a given category after excluding votes for a list of finalists.
+  @param $categoryId The databae key for the Hugo Award category being searched
+  @param $excluded $excluded either a string containing a comma separated list of database keys for Hugo Award finalists, or an array of said keys.  Optional.
+  @return An array of unique Voter IDs (Hugo Award PINs)
+*/
     function getRemainingVoters($categoryId,$excluded='')
     {
       $sql = <<<EOT
@@ -2272,6 +2368,12 @@ EOT;
       return $voters;
     }
 
+/**
+  Gets the full ballot for a given voter and a given category
+  @param $memberId A voter's unique Member ID (Hugo PIN)
+  @param $categoryId The database key for a Hugo Award Finalist.
+  @return A hash mapping the short list keys to the rank for this voter and category.
+*/
     function getVoteBallot($memberId,$categoryId)
     {
       $sql = <<<EOT
@@ -2304,6 +2406,11 @@ EOT;
       return $ballot;
     }
 
+/**
+  Gets the "No Award" entry for the specified Hugo Award category
+  @param $categoryId The database key for the Hugo Award category
+  @return database key for the short list entry corresponding to "No Award" for that category.
+*/
     function getNoAward($categoryId)
     {
       $sql = <<<EOT
@@ -2328,6 +2435,12 @@ EOT;
       return null;
     }
 
+/**
+  Gets the rank for a given member and Hugo Award Finalist.
+  @param $memberId The voter's unique member ID (Hugo Voter PIN)
+  @param $shortlistId The database key for the Hugo Award Finalist record
+  @return The rank for this entry.  Null if there is no vote for this finalist.
+*/
     function getRank($memberId,$shortlistId)
     {
       $sql = <<<EOT
@@ -2352,8 +2465,13 @@ EOT;
       return $null;
     }
 
-    protected static $vote231Count = 0;
-
+/**
+  Gets the current top vote for a given member in a given category once other finalists have been excluded.
+  @param $memberId The voter's unique member ID (Hugo Voter PIN)
+  @param $categoryId The databae key for the Hugo Award category being searched
+  @param $excluded $excluded either a string containing a comma separated list of database keys for Hugo Award finalists, or an array of said keys.  Optional.
+  @return A hash containing the finalist's database key, and rank that represents the specified voter's highest remaining vote in the specified category.
+*/
     function getCurrentVote($memberId,$categoryId,$excluded)
     {
       if(is_array($excluded))
@@ -2401,7 +2519,11 @@ EOT;
       return(array('short_list_id' => $shortlistId, 'rank'=> $rank));
     }
 
-
+/**
+  Counts the number of first place votes for a given Hugo Award Finalist
+  @param $shortListId The database key for the Hugo Award Finalist
+  @return Count of voters who placed that finalist in first place on their ballot.
+*/
     function countFirstPlaceVotes($shortListId)
     {
       $sql = <<<EOT
@@ -2424,6 +2546,12 @@ EOT;
       return($firstPlaceVotes);
     }
 
+/**
+  Updates the ballot count table for a given Hugo Award Finalist on a given voting round.
+  @param $shortlistId The database key for the Hugo Award Finalist
+  @param $placement The place in the ranking for this finalist during this round of the Hugo Award balloting.
+  @param $count The number of votes received during this round of counting.
+*/
     function addBallotCount($shortlistId,$placement,$round,$count)
     {
       $sql = <<<EOT
@@ -2451,6 +2579,12 @@ EOT;
       $query->close();
     }
 
+/**
+  Get the order of results for the Hugo Award Finalist in a given category and placement
+  @param $categoryId The database key for the Hugo Award category
+  @param $placement The number of the place (1 for Hugo Award, 2 for 1st runner up, etc.) 
+  @return A hash mapping the finalist's database key to their order in this place.
+*/
     function getResultsOrder($categoryId,$placement)
     {
       $sql = <<<EOT
@@ -2481,6 +2615,12 @@ EOT;
       return $resultsOrder;
     }
 
+/**
+  TODO - Figure out what this function does for sure.
+  @param $shortlistId The database key for the Hugo Award Finalist
+  @param $placement The place in the ranking for this finalist during this round of the Hugo Award balloting.
+  @return A hash mapping the count at each round for this finalist and placement.
+*/
     function getBallotCounts($shortlistId,$placement)
     {
       $sql = <<<EOT
@@ -2508,6 +2648,11 @@ EOT;
       return($ballotCounts);
     }
 
+/**
+  Get the Hugo Finalist database key for "No Award" for a given Hugo Award Category
+  @param $categoryId  The database key for the Hugo Award category
+  @return The Hugo Finalist database key for "No Award" for that category, -1 if it has not been populated.
+*/
     function getNoAwardId($categoryId)
     {
       print("<!-- \$categoryId = $categoryId -->\n");
@@ -2537,6 +2682,12 @@ EOT;
       return $noAwardId;
     }
 
+/**
+  Get the data needed to perform the "No Award" comparison required by the WSFS Constitution.
+  @param $winner The Hugo Award finalist database key of the presumptive Hugo Award winner in some category
+  @param $noAward The Hugo Award finalist database key for the "No Award" in that same category.
+  @return A hash containing the needed data.
+*/
     function getNoAwardCompairson($winner,$noAward)
     {
       $sql = <<<EOT
@@ -2582,6 +2733,13 @@ EOT;
 
       return array("winner" => $winnerHigher, "noAward" => $noAwardHigher);
     }
+    
+/**
+  Move the nominations from one Nominee to another nominee
+  @warning The nomination normalization feature has not been used since Chicon 7, if then.
+  @param $fromId The database key for the nominee donating nominations.
+  @param $toId The database key for the nominee receiving nominations.
+*/
   function transferNominations($fromId,$toId)
   {
     $sql = <<<EOT
@@ -2628,6 +2786,11 @@ EOT;
     $query->execute();
   }
 
+/**
+  Get the email address for a given PIN
+  @param $pin The Hugo Voter PIN
+  @return The email address associated with this PIN.
+*/
   function getEmailHugoDb($pin)
   {
     $sql = <<<EOT
@@ -2649,6 +2812,11 @@ EOT;
     }
   }
 
+/**
+  Gets the membership information from a PIN
+  @param $pin The Hugo Voter PIN
+  @return A hash containing the membership information.
+*/
   function getMemberInfoFromPin($pin)
   {
     $sql = <<<EOT
@@ -2678,6 +2846,10 @@ EOT;
     }
   }
 
+/**
+  Get all of the membership information contained in the internal membership table
+  @return An array of hashes containing the membership information.
+*/
   function getAllMemberInfo()
   {
     $sql = <<<EOT
@@ -2708,6 +2880,11 @@ EOT;
     return $memberInfo;
   }
 
+/**
+  Get the membership information for selected members
+  @param $pinList An array of PINs to get information for
+  @return An array of hashes containing the memebership information.
+*/
   function getSelectMemberInfo($pinList)
   {
     $pinList = implode(',',$pinList);
@@ -2743,6 +2920,11 @@ EOT;
     return $memberInfo;
   }
 
+/**
+  Get the list of unique nominators, optionally from a single category.
+  @param $categoryId  The database key for the Hugo Award category.  Optional
+  @return An array of member IDs (Hugo Voter PINs) for the nominators
+*/
   function getNominators($categoryId = -1)
   {
     $sql = <<<EOT
@@ -2770,6 +2952,11 @@ EOT;
     return $nominators;
   }
 
+/**
+  Log the receipt of a Hugo Nominating ballot via HTTP Post
+  
+  This function operates without parameters by interacting directly with the web server
+*/
   function logNominationPost()
   {
     global $_POST;
@@ -2796,6 +2983,10 @@ EOT;
     $query->close();
   }
 
+/**
+  Logs the nomination page generated (TODO, confirm)
+  @param $pageText Text of the page to be logged.
+*/
   function logNominationPage($pageText)
   {
     global $_SERVER;
@@ -2811,6 +3002,11 @@ EOT;
     $query->close();
   }
 
+/**
+  Gets the most recent data when the specified nominator has updated their nominating ballot
+  @param $nominatorId The unique member ID for the nominator (Hugo Voter PIN)
+  @return The date when they last updated their nominating ballot.
+*/
   function getLatestNominationDate($nominatorId)
   {
     if(preg_match('(\\d+)',$nominatorId,$matches))
@@ -2834,6 +3030,10 @@ EOT;
     return $latestNominationDate;
   }
 
+/**
+  Gets a list of all of the PINs in the internal membership database with their two leftmost characters stripped off.
+  @return An array containing the list of PINs
+*/
   function getCurrentPins()
   {
     $sql = <<<EOT
@@ -2854,6 +3054,10 @@ EOT;
     return $currentPins;
   }
 
+/**
+  Gets the list of PINs that have been used to vote for the Hugo Award.
+  @return An array containing the list of PINs used to vote for the Hugo Award.
+*/
   function getVotedPins()
   {
     $sql = <<<EOT
@@ -2874,6 +3078,10 @@ EOT;
     return $votedPins;
   }
 
+/**
+  Gets the list of PINs that have voted, but are not in the current internal membership list - likely due to membership transfers prior to Chicon 8.
+  @return An array containing hashes of information about ballots that do not have PINs in the current internal membership list
+*/
   function getOrphanBallots()
   {
     $currentPins = self::getCurrentPins();
@@ -2926,6 +3134,11 @@ EOT;
     return $orphanBallotList;
   }
 
+/**
+  Get a summary record for the specified voter
+  @param $voterId The unique voter ID (Hugo Voter PIN)
+  @return a Hash containing voter information.
+*/
   function getVoterSummary($voterId)
   {
     $voterInfo = array();
@@ -2984,6 +3197,12 @@ EOT;
     return $voterInfo;
   }
 
+/**
+  Set the ballot approval for the specified voter 
+  @param $voterId The unique ID (Hugo Voter PIN)
+  @param $approved The new approval setting (0 or 1)
+  @return A string showing the updated settings.
+*/
   function approveVotes($voterId,$approved)
   {
     $sql = <<<EOT
@@ -3000,6 +3219,10 @@ EOT;
 
   }
 
+/**
+  Empties the internal membership table.
+  @return The results of the SQL query to empty the table.
+*/
   function emptyMembership()
   {
     $sql = <<<EOT
@@ -3011,14 +3234,13 @@ EOT;
   }
 }
 
-// Remove automatically added escape characters
-function cleanEntry($string)
-{
-  $newString = stripslashes($string);
+/**
+  Comparison function for sorting nominations by their count.
+  
+    @warning The nomination counting functionality has not been used since Chicon 7, if then. It is based on the WSFS Constitution rules prior to 2017, and does not support the current process for determining the Hugo Award Finalists.
 
-  return $string;
-}
-
+    @return The values needed to compare the two records.
+*/
 function sortNomineesByCount($a, $b)
 {
   return ($a['nomination_count_reviewed'] == $b['nomination_count_reviewed']) ? 0 : (($a['nomination_count_reviewed'] > $b['nomination_count_reviewed']) ? -1 : 1);
