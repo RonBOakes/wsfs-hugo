@@ -1,6 +1,0 @@
-Fix a couple of errors with PIN lookup and notification
-
---This line, and those below, will be ignored--
-
-M    mac2membership/eventEspressoImport.php
-M    pin_lookup.php

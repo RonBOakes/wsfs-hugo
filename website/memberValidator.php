@@ -1,8 +1,13 @@
 <?PHP
-/* Written by Ronald B. Oakes, copyright  2015, 2018
+/* Written by Ronald B. Oakes, copyright  2015, 2018, 2022
    Rights assigned to Worldcon Intellectual Property, A California Nonprofit Corporation
    For the exclusive of the World Science Fiction convention for purposes of administering the Hugo Awards
    All other uses are forbidden without explicit permission from the author and Worldcon Intellection Property.
+*/
+
+/**
+Sample code for interfacing the Hugo Award system with the convention's membership database.  This sample is the one
+used for Worldcon 76 in San Jose.
 */
 
 require_once('./database.php');
@@ -126,18 +131,31 @@ EOT;
     }
 }
 
-// $validationData = validateMember($membership,$pin,$lastname);
+/**
+  Function to validate a member.  This takes in the membership information from the website, and returns a true or false value.  This is the only function in this file that must be implemented for the rest of the package to work.
+  
+  @param $membership Memberhsip ID as provided by the administering Worldcon
+  @param $pin Unique Hugo Voter PIN
+  @param $lastname Family name (Eurocentric)
+  @param $firstname Given name (Eurocentric)
+  @return 1 if the membership is valid, 0 otherwise.
+*/
 function validateMember($membership,$pin,$lastname,$firstname)
 {
   $db = new Database();
+  
+  // See if this person has a record in the internal Hugo Award database.
   $result = $db->validateMemberHugoDb($lastname,$membership,$pin,true);
   if($result == 1)
   {
     return $result;
   }
+  
+  // If not, see if they can be validated through the full membership database.
   $result = validateWorldcon76Member($lastname,$firstname,$membership,$pin,$memberInfo);
   if($result == 1)
   {
+	// If validated, also add the record to the internal table to speed future validation.
     $db->addUpdatePinEmailRecord($memberInfo['firstname'],
                                  $memberInfo['secondname'],
                                  $memberInfo['member_id'],

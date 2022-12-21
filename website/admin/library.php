@@ -2,12 +2,17 @@
 
 // Orignally Written by Ronald B. Oakes, copyright 2011 assigned to Chicago Worldcon Bid
 
-/* Written by Ronald B. Oakes, copyright 2014, Updated 2015
+/* Written by Ronald B. Oakes, copyright 2014, Updated 2015, 2022
    Rights assigned to Worldcon Intellectual Property, A California Nonprofit Corporation
    For the exclusive of the World Science Fiction convention for purposes of administering the Hugo Awards
    All other uses are forbidden without explicit permission from the author and Worldcon Intellection Property.
 */
 
+/**
+  Library functions required for the Hugo Award administrative pages.
+*/
+
+// Load in the libraries from the parent directory and then change back.
 chdir('..');
 require_once('./database.php');
 require_once('./memberValidator.php');
