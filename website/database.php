@@ -17,7 +17,9 @@
 
 require_once('./db_config.php');
 
-// Database handler
+/**
+  Database Handler.  All database transactions for the main Hugo Award database are processed through this class.
+*/
 class database
 {
   protected static $db;
@@ -25,7 +27,7 @@ class database
 
 /**
   Constructor for the database class.
-  Optional Input: $retro - set to true to indicate that this is the database for the Retro Hugo Awards.
+  @param $retro (Optional) set to true to indicate that this is the database for the Retro Hugo Awards.
 */
   function database($retro = false)
   {
@@ -48,7 +50,7 @@ class database
 
 /**
   Returns the information on the database connection.
-  Returns: a hash containing the database connection information.
+  @return a hash containing the database connection information.
 */
   function getConnectInfo()
   {
@@ -59,30 +61,26 @@ class database
   }
 
 /**
-  Shortcut function to get a handle to the database.  Use with caution.
-  Returns: The handle to the database.
+  Shortcut function to get a handle to the database.
+  @warning Use with caution
+  @return The handle to the database.
 */
   function getDb()
   {
     return self::$db;
   }
 
-    /*
-     Function to add or update a Hugo Award category within the database.
-     Inputs:
-        $name - Short name of the category, must be unique
-        $description - The description of the category
-        $ballotPosition - how far down the ballot with this category be listed
-        $primary_datum_description - what is the description of the primary datum
-            - Title (for most works), or individual (for individual awards)
-        $datum_2_description - what is the description of the second datum
-            - Author for most works, writer/director for Dramatic Presentation, etc.
-        $datum_3_description - what is the description of the thrid datum
+/**
+ Function to add or update a Hugo Award category within the database.
+	@param $name - Short name of the category, must be unique
+    @param $description - The description of the category
+    @param $ballotPosition - how far down the ballot with this category be listed
+    @param $primary_datum_description - what is the description of the primary datum - Title (for most works), or individual (for individual awards)
+    @param $datum_2_description - what is the description of the second datum - Author for most works, writer/director for Dramatic Presentation, etc.
+    @param $datum_3_description - what is the description of the thrid datum
 
-     Returns:
-        The Assigned category ID for this category if it successfully was added or updated
-        -1 if anything failed.
-     */
+    @return The Assigned category ID for this category if it successfully was added or updated, -1 if anything failed.
+*/
   function addUpdateCategory($name,$description,$ballotPosition,$primary_datum_description,$datum_2_description, $datum_3_description)
   {
     $sql = <<<EOT
@@ -157,10 +155,7 @@ EOT;
 
 /**
   Function to get the Hugo Award Categories.
-  Returns: A hash containing the Name, Description, Ballot Position, Data
-     descriptions, the number of items on the short list (finalists), if the
-     description of this category should be included in final voting ballots,
-     and if this is a category for an individual person (or team).
+  @return  A hash containing the Name, Description, Ballot Position, Data descriptions, the number of items on the short list (finalists), if the description of this category should be included in final voting ballots, and if this is a category for an individual person (or team).
 */
   function getCategoryInfo()
   {
@@ -227,7 +222,7 @@ EOT;
 
 /**
   Returns the count of unique individuals who have nominating ballots
-  Return: the number of unique individuals with nominating ballots.
+  @return the number of unique individuals with nominating ballots.
 */
   function countBallots()
   {
@@ -246,11 +241,10 @@ EOT;
 /**
   Gets the number of nominations an individual nominator has submitted in a
   given category.
-  Input:
-    $nominatorId - Unique ID for the nominator.  Normally this is their Unique Hugo Award PIN.
-    $awardCategoryId - Database Key/ID for the award category.
-    Optional $reviewedOnly - Unused.
-  Returns: Count of nominations for this unique nominator.
+    @param $nominatorId - Unique ID for the nominator.  Normally this is their Unique Hugo Award PIN.
+    @param $awardCategoryId - Database Key/ID for the award category.
+    @param $reviewedOnly (optional) - Unused.
+    @return Count of nominations for this unique nominator.
 */
   function countNominationsByNominator($nominatorId,$awardCategoryId,$reviewedOnly=false)
   {
@@ -277,13 +271,12 @@ EOT;
 
 /**
   Adds a new nomination record.
-  Inputs:
-    $nominatorId  - Unique ID for the nominator.  Normally this is their Unique Hugo Award PIN.
-    $awardCategoryId - Database Key/ID for the award category.
-    $primary_datum - Primary datum for this category (Title, Individual, etc.)
-    $datum_2 - Second datum for this category
-    $datum_3 - Third datum for this category
-  Returns: An HTML/XML encoded comment describing the results of this function.
+    @param $nominatorId  - Unique ID for the nominator.  Normally this is their Unique Hugo Award PIN.
+    @param $awardCategoryId - Database Key/ID for the award category.
+    @param $primary_datum - Primary datum for this category (Title, Individual, etc.)
+    @param $datum_2 - Second datum for this category
+    @param $datum_3 - Third datum for this category
+    @return An HTML/XML encoded comment describing the results of this function.
 */
   function addNomination($nominatorId,$awardCategoryId,$primary_datum,$datum_2='',$datum_3='')
   {
@@ -360,10 +353,9 @@ EOT;
 
 /**
   Clears the entered nominations for the specified nominator ID and category
-  Inputs:
-    $nominatorId  - Unique ID for the nominator.  Normally this is their Unique Hugo Award PIN.
-    $awardCategoryId - Database Key/ID for the award category.
-  Returns:  An HTML/XML encoded comment describing the results of this function.
+    @param $nominatorId  - Unique ID for the nominator.  Normally this is their Unique Hugo Award PIN.
+    @param $awardCategoryId - Database Key/ID for the award category.
+    @return An HTML/XML encoded comment describing the results of this function.
 */
   function clearNominations($nominatorId,$awardCategoryId)
   {
@@ -401,14 +393,13 @@ EOT;
   Adds a nominee to the nominees' table.  This table contains all of the unique strings (primary datum)
   entered for each category to facilitate normalization.
 
-  NOTE: The nomination normalization feature has not been used since Chicon 7, if then.
+  @warning The nomination normalization feature has not been used since Chicon 7, if then.
 
-  Inputs:
-    $awardCategoryId - Database Key/ID for the award category.
-    $primary_datum - Primary datum for this category (Title, Individual, etc.)
-    $datum_2 - Second datum for this category
-    $datum_3 - Third datum for this category
-  Returns: ID for the selected nominee, -1 if an error occured.
+  @param $awardCategoryId - Database Key/ID for the award category.
+  @param $primary_datum - Primary datum for this category (Title, Individual, etc.)
+  @param $datum_2 - Second datum for this category
+  @param $datum_3 - Third datum for this category
+  @return ID for the selected nominee, -1 if an error occured.
 */
   function addNominee($awardCategoryId,$primary_datum,$datum_2,$datum_3,&$return)
   {
@@ -477,13 +468,12 @@ EOT;
 
   This can be used during nomination normalization.
 
-  NOTE: The nomination normalization feature has not been used since Chicon 7, if then.
+  @warning The nomination normalization feature has not been used since Chicon 7, if then.
 
-  Inputs:
-    $nomineeId - Unique ID for the nominee record to be updated.
-    $primary_datum - Primary datum for this category (Title, Individual, etc.)
-    $datum_2 - Second datum for this category
-    $datum_3 - Third datum for this category
+  @param $nomineeId - Unique ID for the nominee record to be updated.
+  @param $primary_datum - Primary datum for this category (Title, Individual, etc.)
+  @param $datum_2 - Second datum for this category
+  @param $datum_3 - Third datum for this category
 */
   function updateNominee($nomineeId,$primaryDatum,$datum2,$datum3)
   {
@@ -502,12 +492,10 @@ EOT;
 /**
   Count the number of nominations that match a given nominee record (ID)
 
-  NOTE: The nomination counting functionality has not been used since Chicon 7, if then.
-  It is based on the WSFS Constitution rules prior to 2017, and does not support the current
-  process for determining the Hugo Award Finalists.
+  @warning The nomination counting functionality has not been used since Chicon 7, if then. It is based on the WSFS Constitution rules prior to 2017, and does not support the current process for determining the Hugo Award Finalists.
 
-  Inputs:
-    $nomineeId - Unique ID for the nominee record to be updated.
+  @param $nomineeId - Unique ID for the nominee record to be updated.
+  @return the number of nominations for the supplied nominee ID.
 */
   function countNominations($nomineeId,$reviewedOnly=false)
   {
@@ -537,13 +525,10 @@ EOT;
 /**
   Gets the information contained in the Nominee record
 
-  NOTE: The nomination counting functionality has not been used since Chicon 7, if then.
-  It is based on the WSFS Constitution rules prior to 2017, and does not support the current
-  process for determining the Hugo Award Finalists.
+  @warning The nomination counting functionality has not been used since Chicon 7, if then. It is based on the WSFS Constitution rules prior to 2017, and does not support the current process for determining the Hugo Award Finalists.
 
-  Inputs:
-    $nomineeId - Unique ID for the nominee record to be updated.
-  Returns: A hash containing the nominee data for the selected nominee.
+  @param $nomineeId - Unique ID for the nominee record to be updated.
+  @return A hash containing the nominee data for the selected nominee.
 
 */
   function getNomineeInfo($nominee_id)
@@ -585,14 +570,11 @@ EOT;
 /**
   Gets a list of the nominees in a given category
 
-  NOTE: The nomination counting functionality has not been used since Chicon 7, if then.
-  It is based on the WSFS Constitution rules prior to 2017, and does not support the current
-  process for determining the Hugo Award Finalists.
+  @warning The nomination counting functionality has not been used since Chicon 7, if then. It is based on the WSFS Constitution rules prior to 2017, and does not support the current process for determining the Hugo Award Finalists.
 
-  Inputs:
-    $nomineeId - Unique ID for the nominee record to be updated.
-    Optional $max - the maximum number of records to return.
-  Return: A list of the nominees, sorted lexagraphically.
+  @param $nomineeId - Unique ID for the nominee record to be updated.
+  @param $max - the maximum number of records to return. (Optional)
+  @return A list of the nominees, sorted lexagraphically.
 */
   function listNominees($award_category,$max=-1)
   {
@@ -633,14 +615,11 @@ EOT;
 /**
   Gets a list of the nominees in a given category, ordered by the number of nominations received.
 
-  NOTE: The nomination counting functionality has not been used since Chicon 7, if then.
-  It is based on the WSFS Constitution rules prior to 2017, and does not support the current
-  process for determining the Hugo Award Finalists.
+  @warning The nomination counting functionality has not been used since Chicon 7, if then. It is based on the WSFS Constitution rules prior to 2017, and does not support the current process for determining the Hugo Award Finalists.
 
-  Inputs:
-    $nomineeId - Unique ID for the nominee record to be updated.
-    Optional $max - the maximum number of records to return.
-  Return: A list of the nominees, sorted lexagraphically.
+  @param $nomineeId - Unique ID for the nominee record to be updated.
+  @param $max - the maximum number of records to return. (Optional)
+  @return A list of the nominees, sorted lexagraphically.
 */
   function listNomineesByCount($award_category,$max=-1)
   {
@@ -691,9 +670,7 @@ EOT;
 /**
   Empties and repopulates the Nominees table based on the contents of the Nominations table.
 
-  NOTE: The nomination counting functionality has not been used since Chicon 7, if then.
-  It is based on the WSFS Constitution rules prior to 2017, and does not support the current
-  process for determining the Hugo Award Finalists.
+  @warning The nomination counting functionality has not been used since Chicon 7, if then. It is based on the WSFS Constitution rules prior to 2017, and does not support the current process for determining the Hugo Award Finalists.
 
 */
   function regenerateNominations()
@@ -755,9 +732,9 @@ EOT;
 /**
   Update the nomination configuration information - that is the dates when the system will open and close
   Hugo Award nominations.
-  Inputs:
-    $nominationsOpen - Date and time when Hugo Award Nominations will open (in system time)
-    $nominationsClose - Date and time when Hugo Award Nominations will close (in system time)
+  
+  @param $nominationsOpen - Date and time when Hugo Award Nominations will open (in system time)
+  @param $nominationsClose - Date and time when Hugo Award Nominations will close (in system time)
 */
   function updateNominationConfig($nominationsOpen,$nominationsClose)
   {
@@ -775,8 +752,7 @@ EOT;
 /**
   Get the current configuration for the Hugo Award nomination - that is the date when nominations open and close,
   and when the preview mode closes.
-  Returns: A hash containing the open and closing dates for Hugo Award Nominations.  Safe dates are returned if an error
-    occurs.
+  @return A hash containing the open and closing dates for Hugo Award Nominations.  Safe dates are returned if an error occurs.
 */
   function getCurrentNominationConfig()
   {
@@ -805,6 +781,10 @@ EOT;
                  'close'=> '2011-02-29 23:59:59');
   }
 
+/**
+  Used to determine if the Hugo Award nominations are currently open.
+  @return A String indicating the state of the Hugo Award Nominations.
+*/
   function areNominationsOpen()
   {
     $sql = <<<EOT
@@ -827,6 +807,10 @@ EOT;
     return('Hugo Award nominations are not open yet');
   }
 
+/**
+  Used to determine if the Hugo Award voting is currently open.
+  @return A String indicating the state of the Hugo Award voting.
+*/
   function getVotingStatus()
   {
     $sql = <<<EOT
@@ -848,6 +832,10 @@ EOT;
     return 'BeforeOpen';
   }
 
+/**
+  Used to determine if the Hugo Award nomitions are in administrator preview mode.
+  @return 1 (true) if previews are open, 0 (false) otherwise.
+*/
   function inPreview()
   {
     $sql = <<<EOT
@@ -866,6 +854,10 @@ EOT;
     return 0;
   }
 
+/**
+  Gets the text used to describe who is eligable to nominate for Hugo Awards.
+  @returns A string containing the text used to describe who is eligable to nominate for Hugo Awards.
+*/
   function getEligibilityText()
   {
     $sql = <<<EOT
