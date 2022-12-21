@@ -72,12 +72,12 @@ class database
 
 /**
  Function to add or update a Hugo Award category within the database.
-	@param $name - Short name of the category, must be unique
-    @param $description - The description of the category
-    @param $ballotPosition - how far down the ballot with this category be listed
-    @param $primary_datum_description - what is the description of the primary datum - Title (for most works), or individual (for individual awards)
-    @param $datum_2_description - what is the description of the second datum - Author for most works, writer/director for Dramatic Presentation, etc.
-    @param $datum_3_description - what is the description of the thrid datum
+    @param $name Short name of the category, must be unique
+    @param $description The description of the category
+    @param $ballotPosition how far down the ballot with this category be listed
+    @param $primary_datum_description what is the description of the primary datum Title (for most works), or individual (for individual awards)
+    @param $datum_2_description what is the description of the second datum Author for most works, writer/director for Dramatic Presentation, etc.
+    @param $datum_3_description what is the description of the thrid datum
 
     @return The Assigned category ID for this category if it successfully was added or updated, -1 if anything failed.
 */
@@ -96,7 +96,7 @@ EOT;
 
     $query->bind_result($category_id);
 
-    if($query->fetch())  // Existing category - update
+    if($query->fetch())  // Existing category update
     {
       $query->close();
 
@@ -241,9 +241,9 @@ EOT;
 /**
   Gets the number of nominations an individual nominator has submitted in a
   given category.
-    @param $nominatorId - Unique ID for the nominator.  Normally this is their Unique Hugo Award PIN.
-    @param $awardCategoryId - Database Key/ID for the award category.
-    @param $reviewedOnly (optional) - Unused.
+    @param $nominatorId Unique ID for the nominator.  Normally this is their Unique Hugo Award PIN.
+    @param $awardCategoryId Database Key/ID for the award category.
+    @param $reviewedOnly (optional) Unused.
     @return Count of nominations for this unique nominator.
 */
   function countNominationsByNominator($nominatorId,$awardCategoryId,$reviewedOnly=false)
@@ -271,11 +271,11 @@ EOT;
 
 /**
   Adds a new nomination record.
-    @param $nominatorId  - Unique ID for the nominator.  Normally this is their Unique Hugo Award PIN.
-    @param $awardCategoryId - Database Key/ID for the award category.
-    @param $primary_datum - Primary datum for this category (Title, Individual, etc.)
-    @param $datum_2 - Second datum for this category
-    @param $datum_3 - Third datum for this category
+    @param $nominatorId  Unique ID for the nominator.  Normally this is their Unique Hugo Award PIN.
+    @param $awardCategoryId Database Key/ID for the award category.
+    @param $primary_datum Primary datum for this category (Title, Individual, etc.)
+    @param $datum_2 Second datum for this category
+    @param $datum_3 Third datum for this category
     @return An HTML/XML encoded comment describing the results of this function.
 */
   function addNomination($nominatorId,$awardCategoryId,$primary_datum,$datum_2='',$datum_3='')
@@ -325,7 +325,7 @@ EOT;
 
     $return .= "<!-- Proceed to add -->\n";
 
-    // Always add the nominee - duplicates will be accounted for OK
+    // Always add the nominee duplicates will be accounted for OK
     $nominee_id = $this->addNominee($awardCategoryId,$primary_datum,$datum_2,$datum_3,$return);
 
     $return .= "<!-- Nominee ID: $nominee_id -->\n";
@@ -353,8 +353,8 @@ EOT;
 
 /**
   Clears the entered nominations for the specified nominator ID and category
-    @param $nominatorId  - Unique ID for the nominator.  Normally this is their Unique Hugo Award PIN.
-    @param $awardCategoryId - Database Key/ID for the award category.
+    @param $nominatorId  Unique ID for the nominator.  Normally this is their Unique Hugo Award PIN.
+    @param $awardCategoryId Database Key/ID for the award category.
     @return An HTML/XML encoded comment describing the results of this function.
 */
   function clearNominations($nominatorId,$awardCategoryId)
@@ -395,10 +395,10 @@ EOT;
 
   @warning The nomination normalization feature has not been used since Chicon 7, if then.
 
-  @param $awardCategoryId - Database Key/ID for the award category.
-  @param $primary_datum - Primary datum for this category (Title, Individual, etc.)
-  @param $datum_2 - Second datum for this category
-  @param $datum_3 - Third datum for this category
+  @param $awardCategoryId Database Key/ID for the award category.
+  @param $primary_datum Primary datum for this category (Title, Individual, etc.)
+  @param $datum_2 Second datum for this category
+  @param $datum_3 Third datum for this category
   @return ID for the selected nominee, -1 if an error occured.
 */
   function addNominee($awardCategoryId,$primary_datum,$datum_2,$datum_3,&$return)
@@ -470,10 +470,10 @@ EOT;
 
   @warning The nomination normalization feature has not been used since Chicon 7, if then.
 
-  @param $nomineeId - Unique ID for the nominee record to be updated.
-  @param $primary_datum - Primary datum for this category (Title, Individual, etc.)
-  @param $datum_2 - Second datum for this category
-  @param $datum_3 - Third datum for this category
+  @param $nomineeId Unique ID for the nominee record to be updated.
+  @param $primary_datum Primary datum for this category (Title, Individual, etc.)
+  @param $datum_2 Second datum for this category
+  @param $datum_3 Third datum for this category
 */
   function updateNominee($nomineeId,$primaryDatum,$datum2,$datum3)
   {
@@ -494,7 +494,7 @@ EOT;
 
   @warning The nomination counting functionality has not been used since Chicon 7, if then. It is based on the WSFS Constitution rules prior to 2017, and does not support the current process for determining the Hugo Award Finalists.
 
-  @param $nomineeId - Unique ID for the nominee record to be updated.
+  @param $nomineeId Unique ID for the nominee record to be updated.
   @return the number of nominations for the supplied nominee ID.
 */
   function countNominations($nomineeId,$reviewedOnly=false)
@@ -527,7 +527,7 @@ EOT;
 
   @warning The nomination counting functionality has not been used since Chicon 7, if then. It is based on the WSFS Constitution rules prior to 2017, and does not support the current process for determining the Hugo Award Finalists.
 
-  @param $nomineeId - Unique ID for the nominee record to be updated.
+  @param $nomineeId Unique ID for the nominee record to be updated.
   @return A hash containing the nominee data for the selected nominee.
 
 */
@@ -572,8 +572,8 @@ EOT;
 
   @warning The nomination counting functionality has not been used since Chicon 7, if then. It is based on the WSFS Constitution rules prior to 2017, and does not support the current process for determining the Hugo Award Finalists.
 
-  @param $nomineeId - Unique ID for the nominee record to be updated.
-  @param $max - the maximum number of records to return. (Optional)
+  @param $nomineeId Unique ID for the nominee record to be updated.
+  @param $max the maximum number of records to return. (Optional)
   @return A list of the nominees, sorted lexagraphically.
 */
   function listNominees($award_category,$max=-1)
@@ -617,8 +617,8 @@ EOT;
 
   @warning The nomination counting functionality has not been used since Chicon 7, if then. It is based on the WSFS Constitution rules prior to 2017, and does not support the current process for determining the Hugo Award Finalists.
 
-  @param $nomineeId - Unique ID for the nominee record to be updated.
-  @param $max - the maximum number of records to return. (Optional)
+  @param $nomineeId Unique ID for the nominee record to be updated.
+  @param $max the maximum number of records to return. (Optional)
   @return A list of the nominees, sorted lexagraphically.
 */
   function listNomineesByCount($award_category,$max=-1)
@@ -730,11 +730,11 @@ EOT;
   }
 
 /**
-  Update the nomination configuration information - that is the dates when the system will open and close
+  Update the nomination configuration information that is the dates when the system will open and close
   Hugo Award nominations.
   
-  @param $nominationsOpen - Date and time when Hugo Award Nominations will open (in system time)
-  @param $nominationsClose - Date and time when Hugo Award Nominations will close (in system time)
+  @param $nominationsOpen Date and time when Hugo Award Nominations will open (in system time)
+  @param $nominationsClose Date and time when Hugo Award Nominations will close (in system time)
 */
   function updateNominationConfig($nominationsOpen,$nominationsClose)
   {
@@ -750,7 +750,7 @@ EOT;
   }
 
 /**
-  Get the current configuration for the Hugo Award nomination - that is the date when nominations open and close,
+  Get the current configuration for the Hugo Award nomination that is the date when nominations open and close,
   and when the preview mode closes.
   @return A hash containing the open and closing dates for Hugo Award Nominations.  Safe dates are returned if an error occurs.
 */
@@ -876,6 +876,14 @@ EOT;
     return '<!-- Unable to fecth Eligibility Text -->';
   }
 
+/**
+  Approves the nominations for a given nominator.
+
+  @warning The nomination counting functionality has not been used since Chicon 7, if then. It is based on the WSFS Constitution rules prior to 2017, and does not support the current process for determining the Hugo Award Finalists.
+  
+  @param $nominatorId the unique ID of the nominator (Hugo Award PIN)
+  @param $userId the database key for the user approving the nominations.
+*/
   function approveNominations($nominatorId,$userId)
   {
     $sql = <<<EOT
@@ -903,6 +911,11 @@ EOT;
     $query->close();
   }
 
+/**
+  Returns the full nomination ballot for a given nominator
+  @param $nominatorId the unique ID of the nominator (Hugo Award PIN)
+  @return An array of hashes containing the nominating ballot for the specified individual
+*/
   function getBallot($nominatorId)
   {
 
@@ -944,6 +957,14 @@ EOT;
     return $ballot;
   }
 
+/**
+  Returns the provisioinal nomination ballot for a given nominator
+
+  @warning The provisional nominations functionality has not been used since Chicon 7, if then.
+  
+  @param $nominatorId the unique ID of the nominator (Hugo Award PIN)
+  @return An array of hashes containing the provisitional nominating ballot for the specified individual
+*/
   function getProvisionalBallot($nominatorId)
   {
     $categoryInfo = $this->getCategoryInfo();
@@ -979,6 +1000,9 @@ EOT;
     return $ballot;
   }
 
+/**
+  This function is supposed to remove any slash characters from the data fields in the nomination table.
+*/
   function cleanNominationsOfSlashes()
   {
     $sql = <<<EOT
@@ -1019,6 +1043,12 @@ EOT;
     $query->close();
   }
 
+/**
+  Get the nominations for a given nominator and category
+  @param $nominatorId The unique ID of the nominator (Hugo Award PIN)
+  @param $categoryId The database key for the Hugo Award Category
+  @returns An array of hashes containing the nomination data for the specified nominator and category.
+*/
   function getNominationsForNominatior($nominatorId,$categoryId)
   {
     if(preg_match('(\\d+)',$nominatorId,$wsfs_hugo_matches))
@@ -1053,6 +1083,15 @@ EOT;
     return $nominations;
   }
 
+/**
+  Get the provisional nominations for a given nominator and category
+
+  @warning The provisional nominations functionality has not been used since Chicon 7, if then.
+  
+  @param $nominatorId The unique ID of the nominator (Hugo Award PIN)
+  @param $categoryId The database key for the Hugo Award Category
+  @returns An array of hashes containing the provisional nomination data for the specified nominator and category.
+*/
   function getProvisionalNominationsForNominatior($nominatorId,$categoryId)
   {
     $sql = <<<EOT
@@ -1083,6 +1122,14 @@ EOT;
     return $nominations;
   }
 
+/**
+  Approves the nominating ballot for a given nominator.
+
+  @warning The nomination counting functionality has not been used since Chicon 7, if then. It is based on the WSFS Constitution rules prior to 2017, and does not support the current process for determining the Hugo Award Finalists.
+  
+  @param $nominatorId The unique ID of the nominator (Hugo Award PIN)
+  @param $sessionKey The PHP session key for the administrative session, which can be used to get the administrative user.
+*/
   function approveBallot($reviewId,$sessionKey)
   {
     $userId = $this->getSessionUser($sessionKey);
@@ -1112,6 +1159,13 @@ EOT;
     $query->close();
   }
 
+/**
+  Logs an email that has been sent by the system. 
+  @param $nominatorId Unique ID (Hugo Award PIN) of the person the email is intended for.
+  @param $emailText Text of the email being sent.
+  @param $result Result of the send mail operation.
+  @param $emailAddress Address the email is being sent to.
+*/
   function logEmail($nominatorId,$emailText,$result,$emailAddress)
   {
     global $_SERVER;
@@ -1138,6 +1192,13 @@ EOT;
     $query->close();
   }
 
+/**
+  Move, or attempt to move, a nomination to a new category.
+  
+    @warning The nomination normalization functionality has not been used since Chicon 7, if then. 
+    @param $nominationId The database key for the nomination being moved.
+    @param $newCategoryId The database key for the category the nomination is being moved into.
+*/
   function moveNomination($nominationId,$newCategoryId)
   {
     print("<!-- Attempting to move nomination $nominationId to category $newCategoryId -->\n");
@@ -1178,6 +1239,10 @@ EOT;
     }
   }
 
+/**
+  Delete a record from the nominations table.
+  @param $nominationId The database key for the nomination to be deleted.
+*/
   function deleteNomination($nominationId)
   {
     $sql = <<<EOT
@@ -1191,221 +1256,16 @@ EOT;
     $query->close();
   }
 
-  function getNewUnverifieds()
-  {
-    $sql = <<<EOT
-SELECT nominator_id
-FROM   unverified_nominator
-WHERE  nominator_id IN (SELECT DISTINCT (0 - nominator_id) AS inverse_id FROM nominations WHERE nominator_id < 0)
-EOT;
-    $query = self::$db->prepare($sql);
-    $query->execute();
-    $query->bind_result($id);
-
-    $newUnverifiedIds = array();
-
-    while($query->fetch())
-    {
-      $newUnverifiedIds[] = $id;
-    }
-
-    $query->close();
-
-    $unverifiedNomineeInfo = array();
-
-    foreach($newUnverifiedIds as $id)
-    {
-      $unverifiedNomineeInfo[$id] = $this->getUnverifiedNominationInfo($id);
-    }
-
-    return $unverifiedNomineeInfo;
-  }
-
-
-  function getNewUnverifiedVotes()
-  {
-    $sql = <<<EOT
-SELECT nominator_id
-FROM   unverified_voter
-WHERE  nominator_id IN (SELECT DISTINCT (0 - member_id) AS inverse_id FROM hugo_ballot_entry WHERE member_id < 0)
-EOT;
-    $query = self::$db->prepare($sql);
-    $query->execute();
-    $query->bind_result($id);
-
-    $newUnverifiedIds = array();
-
-    while($query->fetch())
-    {
-      $newUnverifiedIds[] = $id;
-    }
-
-    $query->close();
-
-    $unverifiedVoteInfo = array();
-
-    foreach($newUnverifiedIds as $id)
-    {
-      $unverifiedVoteInfo[$id] = $this->getUnverifiedVoteInfo($id);
-    }
-
-    return $unverifiedVoteInfo;
-  }
-
-  function getUnverifiedNominationInfo($nominatorId)
-  {
-    $sql = <<<EOT
-SELECT first_name,
-       last_name,
-       address,
-       city,
-       state,
-       postal_code,
-       country,
-       email_address,
-       chicago_number,
-       texas_number,
-       reno_number,
-       pin,
-       time_added,
-       (0 - nominator_id) AS inverse_id,
-       (SELECT COUNT(nomination_id) FROM nominations WHERE nominator_id = inverse_id) AS total_nominations,
-       (SELECT COUNT(DISTINCT award_category_id) FROM nominations WHERE nominator_id = inverse_id) AS categories_nominated
-FROM unverified_nominator
-WHERE nominator_id = ?
-EOT;
-    $query = self::$db->prepare($sql);
-    $query->bind_param('i',$nominatorId);
-    $query->execute();
-
-    $info = array();
-    $query->bind_result($info['first_name'],
-                        $info['last_name'],
-      $info['address'],
-      $info['city'],
-      $info['state'],
-      $info['postal_code'],
-      $info['country'],
-      $info['email_address'],
-      $info['chicago_number'],
-      $info['texas_number'],
-      $info['reno_number'],
-      $info['pin'],
-      $info['time_added'],
-      $info['inverse_id'],
-      $info['total_nominations'],
-      $info['categories_nominated']);
-    $query->fetch();
-
-    $query->close();
-
-    return $info;
-  }
-
-  function getUnverifiedVoteInfo($nominatorId)
-  {
-    $sql = <<<EOT
-
-SELECT first_name,
-       last_name,
-       address,
-       city,
-       state,
-       postal_code,
-       country,
-       email_address,
-       chicago_number,
-       pin,
-       time_added,
-       (0 - nominator_id) AS inverse_id,
-       (SELECT COUNT(ballot_entry_id) FROM hugo_ballot_entry WHERE member_id = inverse_id) AS total_votes,
-       (SELECT COUNT(DISTINCT category_id) FROM hugo_ballot_entry WHERE member_id = inverse_id) AS categories_voted
-FROM unverified_voter
-WHERE nominator_id = ?
-EOT;
-    $query = self::$db->prepare($sql);
-    $query->bind_param('i',$nominatorId);
-    $query->execute();
-
-    $info = array();
-    $query->bind_result($info['first_name'],
-                        $info['last_name'],
-      $info['address'],
-      $info['city'],
-      $info['state'],
-      $info['postal_code'],
-      $info['country'],
-      $info['email_address'],
-      $info['membership_number'],
-      $info['pin'],
-      $info['time_added'],
-      $info['inverse_id'],
-      $info['votes_cast'],
-      $info['categories_voted']);
-    $query->fetch();
-
-    $query->close();
-
-    return $info;
-  }
-
-  function transferUnverifiedNominations($fromId,$toId,$sessionKey)
-  {
-    $userId = $this->getSessionUser($sessionKey);
-
-    $output = '';
-
-    if($toId <= 1)
-    {
-      return '<P><STRONG><FONT COLOR="RED">Invalid Selection Made</FONT></STRONG></P>'."\n";
-    }
-
-    $inverseFromId = - $fromId;
-
-    $categoryInfo = $this->getCategoryInfo();
-
-    foreach($categoryInfo as $categoryId => $categoryData)
-    {
-      $existingCount = $this->countNominationsByNominator($toId,$categoryId,false);
-      $newCount      = $this->countNominationsByNominator($inverseFromId,$categoryId,false);
-
-      if(($existingCount > 0) && ($newCount > 0))
-      {
-        $output .= '<P>Replacing Nominations in '.$categoryData['name'].'</P>'."\n";
-  $this->clearNominations($fromId,$categoryId);
-      }
-      else
-      {
-        $output .= '<P>Moving Nominations in '.$categoryData['name'].'</P>'."\n";
-      }
-
-      $sql = <<<EOT
-UPDATE  nominations
-SET     nominator_id = ?
-WHERE   nominator_id = ?
-EOT;
-      $query = self::$db->prepare($sql);
-      $query->bind_param('ii',$toId,$inverseFromId);
-      $query->execute();
-      $query->close();
-    }
-
-    $sql = <<<EOT
-UPDATE unverified_nominator
-SET    ballot_reassigned = NOW(),
-       reassigned_by = ?,
-       reassigned_to = ?
-WHERE  nominator_id = ?
-EOT;
-    $query = self::$db->prepare($sql);
-    $query->bind_param('iii',$userId,$toId,$fromId);
-    $query->execute();
-    $query->close();
-
-
-    return $output;
-  }
-
+/**
+  Add or update an entry in the list of Hugo Award Finalists, a.k.a. the Hugo Award Shortlist.
+  @param $categoryId The database key for the Hugo Award Category.
+  @param $datum_1 The primary datum for this category (Title, individual, etc.)
+  @param $datum_2 The second dataum for this category (author, editor, network, studio, etc.) Optional
+  @param @datum_3 The third datum for this category
+  
+  The data fields will be programatically modified for safe display under HTML before being placed into the database.
+  A sortable version of $datum_1 will be used for sorting.  This will be generated based on if this is a personal category (Best Editor, etc.) or a works category.  Note, this sorting is Eurocentric.
+*/
   function addUpdateShortList($categoryId,$datum_1,$datum_2='',$datum_3='')
   {
 
@@ -1534,6 +1394,11 @@ EOT;
     return $shortlistId;
   }
 
+/**
+  Gets the shortlist (Hugo Award Finalists)
+  @param $shortlistId The database key for the Hugo Award Finalist
+  @return A hash containing the short list/finalist data.
+*/
   function getShortlistInfo($shortlistId)
   {
     $sql = <<<EOT
@@ -1561,6 +1426,10 @@ EOT;
     return $shortlistInfo;
   }
 
+/**
+  Remove an entry from the shortlist
+  @param $shortlistId The database key of the entry to be removed.
+*/
   function deleteFromShortlist($shortlistId)
   {
     $sql = <<<EOT
@@ -1575,6 +1444,13 @@ EOT;
     $query->close();
   }
 
+/**
+  Get the entire short list for a given Hugo Award Category
+  @param $categoryId The database key for the Hugo Award Category
+  @return An array of hashes containing the short list for the specified category.
+  
+  As a side effect, this function will add "No Award" to any category that does not have it.
+*/
   function getShortlist($categoryId)
   {
     $sql = <<<EOT
@@ -1622,42 +1498,11 @@ EOT;
     return $shortlist;
   }
 
-  function countGoTNominations()
-  {
-    $sql = <<<EOT
-SELECT COUNT(DISTINCT nominator_id)
-FROM   nominations
-WHERE  award_category_id = ?
-  AND  nomination_approved = 1
-  AND  (primary_datum LIKE '%Game of Thrones%' OR datum_2 LIKE '%Game of Thrones%')
-  AND nominator_id NOT IN (SELECT DISTINCT nominator_id
-                           FROM nominations
-                           WHERE award_category_id = ?
-                             AND (primary_datum LIKE '%Game of Thrones%' OR datum_2 LIKE '%Game of Thrones%'))
-
-EOT;
-    $query = self::$db->prepare($sql);
-
-    $longForm  = 7;
-    $shortForm = 8;
-    $query->bind_param('ii',$longForm,$shortForm);  // Long Form
-    $query->execute();
-
-    $query->bind_result($longCount);
-    $query->fetch();
-
-    $shortForm = 8;
-    $query->bind_param('ii',$shortForm,$longForm); // Short Form
-    $query->execute();
-
-    $query->bind_result($shortCount);
-    $query->fetch();
-
-    $goTNominations = array('Long Form' => $longCount, 'Short Form' => $shortCount);
-
-    return $goTNominations;
-  }
-
+/**
+  Counts the unique number of people who made nominations in the specified category.
+  @param $categoryId The database key for the Hugo Award Category
+  @return The number of unique people who made nominations in the specified category.
+*/
   function categoryBallotCount($categoryId)
   {
     $sql = <<<EOT
@@ -1674,83 +1519,13 @@ EOT;
     return $count;
   }
 
-  function getVerifiedPartialSubmissions()
-  {
-    $sql = <<<EOT
-SELECT nominator_id,
-       MAX(date_received),
-       phase_1_data
-FROM phase_1_log
-WHERE nominator_id > 0
-  AND nominator_id NOT IN (SELECT DISTINCT nominator_id FROM nominations WHERE nominator_id > 0)
-GROUP BY nominator_id
-EOT;
-    $query = self::$db->prepare($sql);
-    $query->execute();
-    $query->bind_result($nominatorId,$dateReceived,$phase1Data);
+/**
+  Count the number of unique nominations across all of the categories
+  
+    @warning The nomination counting functionality has not been used since Chicon 7, if then. It is based on the WSFS Constitution rules prior to 2017, and does not support the current process for determining the Hugo Award Finalists.
 
-    $partialSubmissions = array();
-
-    while($query->fetch())
-    {
-      $partialSubmissions[] = array('nominator_id'=>$nominatorId,'date_received'=>$dateReceived,'phase_1_data'=>$phase1Data);
-    }
-
-    return $partialSubmissions;
-  }
-
-  function getUnverifiedPartialSubmissions()
-  {
-    $sql = <<<EOT
-SELECT nominator_id,
-       MAX(date_received),
-       phase_1_data
-FROM phase_1_log
-WHERE nominator_id < 0
-  AND nominator_id NOT IN (SELECT DISTINCT nominator_id FROM nominations WHERE nominator_id < 0)
-GROUP BY nominator_id
-EOT;
-    $query = self::$db->prepare($sql);
-    $query->execute();
-    $query->bind_result($nominatorId,$dateReceived,$phase1Data);
-
-    $possiblePartialSubmissions = array();
-
-    while($query->fetch())
-    {
-      $possiblePartialSubmissions[] = array('nominator_id'=>$nominatorId,'date_received'=>$dateReceived,'phase_1_data'=>$phase1Data);
-    }
-
-    $query->close();
-
-    $partialSubmissions = array();
-
-    $sql = <<<EOT
-SELECT nominator_id,
-       nomination_date,
-       ABS(TIMESTAMPDIFF(SECOND,nomination_date,?)) AS timediff
-FROM   nominations
-WHERE ABS(TIMESTAMPDIFF(SECOND,nomination_date,?)) < 10
-EOT;
-    $query = self::$db->prepare($sql);
-
-    foreach($possiblePartialSubmissions as $submission)
-    {
-      $query->bind_param('ss',$submission['date_received'],$submission['date_received']);
-      $query->execute();
-      $query->bind_result($id,$date,$diff);  // Disposable
-
-      if(!($query->fetch()))  // No match is what we are looking for
-      {
-        $partialSubmissions[] = $submission;
-      }
-    }
-
-    $query->close();
-
-    return $partialSubmissions;
-  }
-
+    @return An array of hashes mapping the Hugo Award Category database keys to the number of unique individuals who have nominating ballots in each.  These ballots must be in an "approved" state according to the unused functionality.
+*/
   function uniqueNominations()
   {
     $sql = <<<EOT
@@ -1799,107 +1574,11 @@ EOT;
     return $counts;
   }
 
-  function getCrossCategoryEnteries()
-  {
-    // Query 1: Get the possible candidate entries
-    $sql = <<<EOT
-SELECT primary_datum,
-       category_count,
-       nomination_count
-FROM   (SELECT primary_datum,
-               COUNT(category_id) AS category_count,
-               (SELECT COUNT(nomination_id) AS nomination_count
-                FROM   nominations
-      WHERE  primary_datum = nominee.primary_datum
-        AND  nomination_approved = 1
-      AND  nomination_deleted  = 0) AS nomination_count
-        FROM nominee
-        WHERE TRIM(primary_datum) NOT LIKE ''
-        GROUP BY primary_datum
-        ORDER BY category_count DESC) AS subquery
-WHERE  category_count > 1
-  AND  nomination_count >= 1
-EOT;
-    $query = self::$db->prepare($sql);
-    $query->execute();
-    $query->bind_result($datum1,$categoryCount,$nominationCount);
-
-    $crossCategoryEnteries = array();
-
-    while($query->fetch())
-    {
-      $crossCategoryEnteries[] = array('datum_1'=>$datum1,'category_count'=>$categoryCount,'total_nomination_count'=>$nominationCount);
-    }
-
-    $query->close();
-
-    // Query 2: Get the matching enteries
-    $sql = <<<EOT
-SELECT nominee.nominee_id,
-       nominee.primary_datum,
-       nominee.datum_2,
-       nominee.datum_3,
-       award_categories.category_id,
-       award_categories.category_name,
-       (SELECT COUNT(nomination_id)
-        FROM   nominations
-  WHERE  nominee_id = nominee.nominee_id
-    AND  nomination_approved = 1
-    AND  nomination_deleted  = 0) AS nomination_count
-FROM   nominee, award_categories
-WHERE  nominee.category_id = award_categories.category_id
-  AND  nominee.primary_datum = ?
-EOT;
-    $query = self::$db->prepare($sql);
-
-    foreach($crossCategoryEnteries as $index => $entry)
-    {
-      $query->bind_param('s',$entry['datum_1']);
-      $query->execute();
-      $query->bind_result($nomineeId,$datum1,$datum2,$datum3,$categoryId,$categoryName,$nominationCount);
-
-      $crossCategoryEnteries[$index]['nomination_records'] = array();
-
-      while($query->fetch())
-      {
-        $crossCategoryEnteries[$index]['nomination_records'][] = array('nominee_id'=>$nomineeId,'datum_1'=>$datum1,'datum_2'=>$datum2,'datum_3'=>$datum3,'category_id'=>$categoryId,'category_name'=>$categoryName,'nomination_count'=>$nominationCount);
-      }
-    }
-
-    $query->close();
-
-    // Query 3 - Get the count of unique nominators for each category - i.e. the number of people who have only nominated the nominee in one category
-    $sql = <<<EOT
-SELECT COUNT(DISTINCT nominator_id) as unique_nominators
-FROM   nominations
-WHERE  primary_datum       = ?
-  AND  award_category_id   = ?
-  AND  nomination_approved = 1
-  AND  nomination_deleted  = 0
-  AND  nominator_id NOT IN (SELECT DISTINCT nominator_id
-                            FROM nominations
-                            WHERE award_category_id != ?
-            AND primary_datum = ?)
-EOT;
-    $query = self::$db->prepare($sql);
-
-    foreach($crossCategoryEnteries as $index => $entry)
-    {
-      foreach($entry['nomination_records'] as $subIndex => $subEntry)
-      {
-        $query->bind_param('siis',$subEntry['datum_1'],$subEntry['category_id'],$subEntry['category_id'],$subEntry['datum_1']);
-  $query->execute();
-  $query->bind_result($uniqueNominators);
-  $query->fetch();  // One result
-  $crossCategoryEnteries[$index]['nomination_records'][$subIndex]['unique_nominators'] = $uniqueNominators;
-      }
-    }
-
-    $query->close();
-
-    return $crossCategoryEnteries;
-  }
-
+/**
+  Counts the number of Hugo Award finalists in the specified category
+  @param $categoryId The database key for the Hugo Award Category
+  @return the count of Hugo Award finalists in the specified category.
+*/
   function getShortlistCount($categoryId)
   {
     $sql = <<<EOT
@@ -1917,6 +1596,10 @@ EOT;
     }
   }
 
+/**
+  Gets the entire Hugo Award shortlist, that is the list of Hugo Award Finalists.
+  @return A hash of arrays keyed by the Hugo Award category database key, containing a sorted array of the short list sort names.
+*/
   function getFullShortlist()
   {
     $categoryInfo = $this->getCategoryInfo();
@@ -1954,6 +1637,16 @@ EOT;
     return   $fullShortList;
   }
 
+/**
+  Used to validate a WSFS member for Hugo Award nomination or voting against the internal Hugo Award database membership and PIN table.
+  @param $lastName1 The Member's name that is being used for validation purposes.  For Eurocentric Worldcons this has been the last name, traditionally the family name.
+  @param $memberId1 The Member's Member ID as assigned by the administring Worldcon.
+  @param $PIN1 The Hugo Award System unique PIN
+  @param $onlyCurrent Set to true to only check records that have the "source" field in the nomination_pin_email_info table populated with "CURRENT"  Optional
+  @return 1 if the information validates against the database, 0 otherwise.
+  
+  This function utilizes the soundex algorithm to compare the names if they do not initially match.  This algorithm is based on United States names, primarily English.  Documentation and other information can be found at https://www.php.net/manual/en/function.soundex.php
+*/
   function validateMemberHugoDb($lastName1,$memberId1,$PIN1,$onlyCurrent = false)
   {
     $sql = <<<EOT
@@ -1990,6 +1683,14 @@ EOT;
     return 0;
   }
 
+/**
+  Attempt to match a record in the internal Hugo Award database membership and PIN table based on email address, or by name.  Name is matched using two names and, possibly, the soundex algorithm.
+  
+  @param $email1 The email address to attempt to match first.
+  @param $firstName1 The given name to match
+  @param $lastName1 The family name to match
+  @return A hash containing the matched data from the database.
+*/
   function lookupMembership($email1,$firstName1,$lastName1)
   {
     $sql = <<<EOT
