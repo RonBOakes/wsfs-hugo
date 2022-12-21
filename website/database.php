@@ -47,6 +47,22 @@ class database
     return self::$db;
   }
 
+    /*
+     Function to add or update a Hugo Award category within the database.
+     Inputs:
+        $name - Short name of the category, must be unique
+        $description - The description of the category
+        $ballotPosition - how far down the ballot with this category be listed
+        $primary_datum_description - what is the description of the primary datum
+            - Title (for most works), or individual (for individual awards)
+        $datum_2_description - what is the description of the second datum
+            - Author for most works, writer/director for Dramatic Presentation, etc.
+        $datum_3_description - what is the description of the thrid datum
+     
+     Returns:
+        The Assigned category ID for this category if it successfully was added or updated
+        -1 if anything failed.
+     */
   function addUpdateCategory($name,$description,$ballotPosition,$primary_datum_description,$datum_2_description, $datum_3_description)
   {
     $sql = <<<EOT
@@ -119,6 +135,13 @@ EOT;
     }
   }
 
+    /*
+     Function to get the Hugo Award Categories.
+     Returns: A hash containing the Name, Description, Ballot Position, Data
+        descriptions, the number of items on the short list (finalists), if the
+        description of this category should be included in final voting ballots,
+        and if this is a category for an individual person (or team).
+     */
   function getCategoryInfo()
   {
     $sql = <<<EOT
@@ -181,6 +204,10 @@ EOT;
     return $categories;
   }
 
+    /*
+     Returns the count of unique individuals who have nominating ballots
+     Return: the number of unique individuals with nominating ballots.
+     */
   function countBallots()
   {
     $sql = <<<EOT
