@@ -4,6 +4,11 @@
    For the exclusive of the World Science Fiction convention for purposes of administering the Hugo Awards
    All other uses are forbidden without explicit permission from the author and Worldcon Intellection Property.
 */
+
+/**
+  Sample basic PHP file for using the Hugo Award front end for voting.  
+*/
+
       define('WSFS_HUGO_VOTE_URL','https://www.worldcon76.org/vote.php');
       define('WSFS_HUGO_FILE_URL','https://www.worldcon76.org');
 
