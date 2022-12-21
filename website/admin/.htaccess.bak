@@ -1,7 +1,0 @@
-AuthUserFile /var/www/sj2018.bid/html/hugo/admin/.htpasswd
-AuthGroupFile /dev/null
-AuthName "Secure Document"
-AuthType Basic
-require valid-user roakes
-require valid-user dmccarty
-
