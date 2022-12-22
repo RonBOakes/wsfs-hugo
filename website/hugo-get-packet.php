@@ -68,7 +68,7 @@ END_OF_SELECT_PACKET;
     $filename = 'Campbell_All.zip';
     
     $file_header = $s3->get_object_headers($bucket, $filename);
-    $headers = array('headers' => array('content-disposition' => $file_header['_info']['content_type'])));
+    $headers = array('headers' => array('content-disposition' => $file_header['_info']['content_type']));
     $file = $s3->get_object($bucket, $filename, $headers);
     
     header('Content-type: ' . $file_header['_info']['content_type']);

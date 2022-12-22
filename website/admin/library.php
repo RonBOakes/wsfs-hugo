@@ -30,7 +30,8 @@ $commandLineSession = false;
 
 /**
   Generates the main menu for the Hugo Awards system administration screen.
-  @param $year The year of the Worldcon and Hugo Awards being administerd.
+  @param $year int 
+ The year of the Worldcon and Hugo Awards being administerd.
 */
 function menu($year = 2015)
 {
@@ -79,7 +80,7 @@ function menu($year = 2015)
     <INPUT TYPE="button" onclick="manageShortlist();" value="Manage Hugo Award Shortlist" />&nbsp;
     <INPUT TYPE="button" onclick="packetDownloadReport();" value="View Packet Download Report" />&nbsp;
     <INPUT TYPE="button" onclick="voterCountReport();" value="View Voter Count Report" />&nbsp;
-    <INPUT TYPE="button" onclick="ballotReport();" value="Get Raw Ballots" />&nbsp
+    <INPUT TYPE="button" onclick="ballotReport();" value="Get Raw Ballots" />&nbsp;
     <INPUT TYPE="button" onclick="votingReport();" value="Generate Voting Report" />&nbsp;
     <INPUT TYPE="button" onclick="votingExport();" value="Export Voting Data" />&nbsp;
     <INPUT TYPE="button" onclick="manualVote();" value="Enter Votes at Any Time" />&nbsp;
@@ -106,7 +107,7 @@ function menu($year = 2015)
 
 /**
   Build a table of number of unique individuals who placed a nomination in the specified category.
-  @param $categoryId The database key for the Hugo Award category.
+  @param $categoryId int The database key for the Hugo Award category.
 */
 function countTable($categoryId)
 {
@@ -131,12 +132,10 @@ function countTable($categoryId)
 /**
   Carry out a count for the ranked perferential voting on the specified Hugo Award category, excluding selected finalists.
   
-  
-  
-  @param $categoryId The Hugo Award category (database key) to be counted
-  @param $excluded An array or comma separated string containing the finalists in that category to exclude.  Used for subsequent placement.
-  @param $voteDetail Will be populated with a complex hash containing details of the counts for each non-excluded finalist
-  @param $maxRank Will be populated with the most votes received by any finalist in this count.
+  @param $categoryId int The Hugo Award category (database key) to be counted
+  @param $excluded array An array or comma separated string containing the finalists in that category to exclude.  Used for subsequent placement.
+  @param $voteDetail array Will be populated with a complex hash containing details of the counts for each non-excluded finalist
+  @param $maxRank int Will be populated with the most votes received by any finalist in this count.
 */
 function voteRound($categoryId,$excluded,&$voteDetail,&$maxRank)
 {
@@ -205,9 +204,9 @@ function voteRound($categoryId,$excluded,&$voteDetail,&$maxRank)
   
   @warning The provisional nominations functionality has not been used since Chicon 7, if then.
   
-  @param $byWhat A string, either "initial" or "count" to determine what kind of list to produce
-  @param $reference The initial to use for the list if listing by initial, or the cut off count if by count.
-  @param $notApproved Unused.
+  @param $byWhat string A string, either "initial" or "count" to determine what kind of list to produce
+  @param $reference string The initial to use for the list if listing by initial, or the cut off count if by count.
+  @param $notApproved boolean Unused.
 */
   function listBallots($byWhat,$reference,$notApproved)
   {
