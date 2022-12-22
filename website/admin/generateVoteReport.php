@@ -1,31 +1,45 @@
 <?PHP
-/* Written by Ronald B. Oakes, copyright 2015
-   Rights assigned to Worldcon Intellectual Property, A California Nonprofit Corporation
-   For the exclusive of the World Science Fiction convention for purposes of administering the Hugo Awards
-   All other uses are forbidden without explicit permission from the author and Worldcon Intellection Property.
-*/
-define('WSFS_HUGO_FILE_URL','http://midamericon2.org/hugo');
-define('WSFS_HUGO_FORM_URL', 'http://midamericon2.org/hugo-awards/voting');
+/*
+ * Written by Ronald B. Oakes, copyright 2015, 2022
+ * Rights assigned to Worldcon Intellectual Property, A California Nonprofit Corporation
+ * For the exclusive of the World Science Fiction convention for purposes of administering the Hugo Awards
+ * All other uses are forbidden without explicit permission from the author and Worldcon Intellection Property.
+ */
+/**
+ * Main program for generating the Hugo Award voting results.
+ * This program can be used to cross-check the voting results
+ * generated from other programs under the theory that if two programs developed independently by different developers produce
+ * the same results, then the results are good and hand checking is not required.
+ *
+ * This program can be run from the command line. This option is recommended. It is also recommended that, if possible, that
+ * it is run on an off-line server with its own copy of the database to avoid impacting any other services using either the web
+ * server or the database server. In past experience running on a PC class machine it can take several hours to generate results
+ * for an entire Hugo Awards.
+ */
+define ( 'WSFS_HUGO_FILE_URL', 'http://midamericon2.org/hugo' );
+define ( 'WSFS_HUGO_FORM_URL', 'http://midamericon2.org/hugo-awards/voting' );
 
-require_once('library.php');
+require_once ('library.php');
 
-$db = new database((isset($_POST['retro_hugo'])));
+$db = new database ( (isset ( $_POST ['retro_hugo'] )) );
 
 $commandLineSession = true;
 
-if(!isset($_SERVER['HTTP_HOST'])) // Hopefully good
+// Check and see if this is being called from the command line
+if (! isset ( $_SERVER ['HTTP_HOST'] )) // Hopefully good
 {
   $commandLineSession = true;
-  $_POST['show_extra_detail'] = 1;
+  $_POST ['show_extra_detail'] = 1;
 }
 
-$pid = -1;
+$pid = - 1;
 
-if(!$commandLineSession)
+// If not running at the command line, attempt to fork off and run in the background.
+if (! $commandLineSession)
 {
-  $pid = pcntl_fork();
+  $pid = pcntl_fork ();
 
-  if($pid == -1)
+  if ($pid == - 1)
   {
     $html = <<<EOT
 <HTML>
@@ -37,10 +51,10 @@ if(!$commandLineSession)
       </BODY>
 </HTML>
 EOT;
-    fwrite($fptr,$html);
-    exit(0);
+    fwrite ( $fptr, $html );
+    exit ( 0 );
   }
-  elseif($pid != 0)
+  elseif ($pid != 0)
   {
     $html = <<<EOT
 <HTML>
@@ -52,8 +66,8 @@ EOT;
       </BODY>
 </HTML>
 EOT;
-    fwrite($fptr,$html);
-    exit(0);
+    fwrite ( $fptr, $html );
+    exit ( 0 );
   }
   else
   {
@@ -61,57 +75,71 @@ EOT;
   }
 }
 
+/**
+ *
+ * @param int $categoryId
+ *          Database key for the Hugo Award category being processed.
+ */
 function getVoteReport($categoryId)
 {
   global $db, $fptr;
 
-  $categoryInfo = $db->getCategoryInfo();
+  // Get the category information and write the header into the report.
+  $categoryInfo = $db->getCategoryInfo ();
 
-  fwrite($fptr,"<H2>Results for ".$categoryInfo[$categoryId]['name']."</H2>\n");
+  fwrite ( $fptr, "<H2>Results for " . $categoryInfo [$categoryId] ['name'] . "</H2>\n" );
 
-  $shortList = $db->getShortList($categoryId);
+  $shortList = $db->getShortList ( $categoryId );
 
-  $rankedHigher = array();
+  // Initialize the list of finalists ranked higher to an empty array.
+  $rankedHigher = array ();
 
-  $placementTags = array(1 => "Hugo Award Winner: ",
-                         2 => "2nd Place: ",
-                         3 => "3rd Place: ",
-                         4 => "4th Place: ",
-                         5 => "5th Place: ",
-                         6 => "6th Place: ",
-                         7 => "7th Place: ",
-                         8 => "8th Place: ");
+  $placementTags = array (
+      1 => "Hugo Award Winner: ",
+      2 => "2nd Place: ",
+      3 => "3rd Place: ",
+      4 => "4th Place: ",
+      5 => "5th Place: ",
+      6 => "6th Place: ",
+      7 => "7th Place: ",
+      8 => "8th Place: "
+  );
 
-  $awardWinner = -1;
+  $awardWinner = - 1;
 
-  for ($placement = 1 ; $placement < count($shortList) ; )
+  // Loop over the number of expected places.
+  for($placement = 1; $placement < count ( $shortList );)
   {
-    fwrite($fptr,"<HR/>\n");
+    fwrite ( $fptr, "<HR/>\n" );
 
     $done = false;
 
+    // Exclude all of the entries already ranked higher.
     $excluded = $rankedHigher;
 
     $round = 1;
 
     do
     {
-      $voteDetail = array();
-      $voteTally = voteRound($categoryId,$excluded,$voteDetail,$maxRank);
+      $voteDetail = array ();
+      // Vote a round.
+      $voteTally = voteRound ( $categoryId, $excluded, $voteDetail, $maxRank );
 
       $votesCast = 0;
 
-      foreach($voteTally as $shortlistId => $count)
+      // Count the votes cast in this round and determine the majority.
+      foreach ( $voteTally as $shortlistId => $count )
       {
         $votesCast += $count;
       }
 
-      $majority = ceil($votesCast * 0.5);
+      $majority = ceil ( $votesCast * 0.5 );
 
-      asort($voteTally);
-      $voteTally = array_reverse($voteTally,true);
+      // Sort the results.
+      asort ( $voteTally );
+      $voteTally = array_reverse ( $voteTally, true );
 
-      $rankOrder = array_keys($voteTally);
+      $rankOrder = array_keys ( $voteTally );
       $html = <<<EOT
       <TABLE BORDER=1>
        <TR>
@@ -120,19 +148,19 @@ function getVoteReport($categoryId)
        </TR>
 
 EOT;
-      fwrite($fptr,$html);
-
-      foreach($voteTally as $shortlistId => $count)
+      fwrite ( $fptr, $html );
+      // Loop over the results and write the counts out.
+      foreach ( $voteTally as $shortlistId => $count )
       {
-        fwrite($fptr,"        <TR>\n");
-        fwrite($fptr,"        <TD>".$shortList[$shortlistId]['datum_1']."</TD>\n");
-        fwrite($fptr,"        <TD>".$count."</TD>\n");
-        fwrite($fptr,"        </TR>\n");
+        fwrite ( $fptr, "        <TR>\n" );
+        fwrite ( $fptr, "        <TD>" . $shortList [$shortlistId] ['datum_1'] . "</TD>\n" );
+        fwrite ( $fptr, "        <TD>" . $count . "</TD>\n" );
+        fwrite ( $fptr, "        </TR>\n" );
 
-EOT;
-        fwrite($fptr,$html);
-
-        $db->addBallotCount($shortlistId,$placement,$round,$count);
+        EOT;
+        fwrite ( $fptr, $html );
+        // Update the database with the ballot count.
+        $db->addBallotCount ( $shortlistId, $placement, $round, $count );
       }
       $html = <<<EOT
       </TABLE>
@@ -141,136 +169,141 @@ EOT;
           <TH>Work/Person</TH>
 
 EOT;
-      fwrite($fptr,$html);
-        for($index = 1; $index <= $maxRank; $index++)
-        {
-          fwrite($fptr,"<TH>$index</TH>\n");
-        }
-        $html = <<<EOT
+      fwrite ( $fptr, $html );
+      for($index = 1; $index <= $maxRank; $index ++)
+      {
+        fwrite ( $fptr, "<TH>$index</TH>\n" );
+      }
+      $html = <<<EOT
         </TR>
 
 EOT;
-        fwrite($fptr,$html);
-        foreach($voteTally as $shortlistId => $count)
-        {
-          fwrite(fptr,"                <TR>\n");
-          fwrite(fptr,"                  <TD>".$shortlist[$shortlistId]['datum_1']."</TD>\n");
-          for($index = 1; $index <= $maxRank; $index++)
-          {
-            fwrite(fptr,'<TD>'.$voteDetail[$shortlistId][$index].'</TD>'."\n");
-          }
-          fwrite(fptr,"                </TR>");
-        }
-        fwrite($fptr,"      </TABLE>\n");
-
-      $highest = array_shift ($rankOrder);
-
-      $lowest     = array_pop($rankOrder);
-      $nextLowest = array_pop($rankOrder);
-
-      if ($voteTally[$lowest] == $voteTally[$nextLowest])  // Tie for lowest, need to break
+      fwrite ( $fptr, $html );
+      // Loop over the finalists and write out the vote detail.
+      foreach ( $voteTally as $shortlistId => $count )
       {
-        $tied = array($lowest);
-
-        $tieValue = $voteTally[$lowest];
-
-        while ($voteTally[$nextLowest] == $tieValue)
+        fwrite ( fptr, "                <TR>\n" );
+        fwrite ( fptr, "                  <TD>" . $shortlist [$shortlistId] ['datum_1'] . "</TD>\n" );
+        for($index = 1; $index <= $maxRank; $index ++)
         {
-          $tied[] = $nextLowest;
-          $nextLowest = array_pop($rankOrder);
+          fwrite ( fptr, '<TD>' . $voteDetail [$shortlistId] [$index] . '</TD>' . "\n" );
+        }
+        fwrite ( fptr, "                </TR>" );
+      }
+      fwrite ( $fptr, "      </TABLE>\n" );
+
+      // Determine the highest
+      $highest = array_shift ( $rankOrder );
+
+      // Determine the lowest, breaking ties.
+      $lowest = array_pop ( $rankOrder );
+      $nextLowest = array_pop ( $rankOrder );
+
+      if ($voteTally [$lowest] == $voteTally [$nextLowest]) // Tie for lowest, need to break
+      {
+        $tied = array (
+            $lowest
+        );
+
+        $tieValue = $voteTally [$lowest];
+
+        while ( $voteTally [$nextLowest] == $tieValue )
+        {
+          $tied [] = $nextLowest;
+          $nextLowest = array_pop ( $rankOrder );
         }
 
-        $firstPlaceVotes = array();
-        foreach($tied as $inx => $shortListId)
+        $firstPlaceVotes = array ();
+        foreach ( $tied as $inx => $shortListId )
         {
-          $firstPlaceVotes[$shortListId] = $db->countFirstPlaceVotes($shortListId);
+          $firstPlaceVotes [$shortListId] = $db->countFirstPlaceVotes ( $shortListId );
         }
 
-        asort($firstPlaceVotes);
-        $firstPlaceVoteRankOrder = array_keys($firstPlaceVotes);
+        asort ( $firstPlaceVotes );
+        $firstPlaceVoteRankOrder = array_keys ( $firstPlaceVotes );
 
-        $lowest = array_shift($firstPlaceVoteRankOrder);
+        $lowest = array_shift ( $firstPlaceVoteRankOrder );
       }
 
-
-
-      if ($voteTally[$highest] >= $majority)
+      // If the highest has met the criteria for winning this round - that is has more current top votes than the majority.
+      if ($voteTally [$highest] >= $majority)
       {
-        $rankOrder   = array_keys($voteTally);  // Regenerate original
-        $highest     = array_shift($rankOrder); // Value will be unchanged
-        $nextHighest = array_shift($rankOrder);
+        $rankOrder = array_keys ( $voteTally ); // Regenerate original
+        $highest = array_shift ( $rankOrder ); // Value will be unchanged
+        $nextHighest = array_shift ( $rankOrder );
 
-        $placed = array();
-        if ($voteTally[$highest] == $voteTally[$nextHighest]) // Tie
+        $placed = array ();
+        if ($voteTally [$highest] == $voteTally [$nextHighest]) // Tie
         {
-          $placed[] = $highest;
-          $tieValue = $voteTally[$highest];
+          $placed [] = $highest;
+          $tieValue = $voteTally [$highest];
 
-          while ($voteTalley[$nextHighest] == $tieValue)
+          while ( $voteTalley [$nextHighest] == $tieValue )
           {
-            $placed[] = $nextHighest;
-            $nextHighest = array_shift($rankOrder);
+            $placed [] = $nextHighest;
+            $nextHighest = array_shift ( $rankOrder );
           }
         }
         else
         {
-          $placed[] = $highest;
+          $placed [] = $highest;
         }
-        fwrite($fptr,"        <P>Majority Found:\n");
-        foreach($placed as $placedId)
+        fwrite ( $fptr, "        <P>Majority Found:\n" );
+        foreach ( $placed as $placedId )
         {
-          fwrite($fptr,$placementTags[$placement].$shortList[$placedId]['datum_1']."<br/>\n");
-          // Do the No Award test for winners
-          $noAwardId = $db->getNoAward($categoryId);
+          fwrite ( $fptr, $placementTags [$placement] . $shortList [$placedId] ['datum_1'] . "<br/>\n" );
+          // Do the No Award test for winners - only needed on first round. TODO: Fix this.
+          $noAwardId = $db->getNoAward ( $categoryId );
 
-          $noAwardTestResults = $db->getNoAwardCompairson($placedId,$noAwardId);
-          fwrite($fptr,$noAwardTestResults["winner"]." Ballots place <strong>".$shortList[$placedId]['datum_1']."</strong> higher than <strong>No Award</strong><br/>\n");
-          fwrite($fptr,$noAwardTestResults["noAward"]." Ballots place <strong>No Award</strong> higher than <strong>".$shortList[$placedId]['datum_1']."</strong><br/>\n");
-          if($noAwardTestResults["winner"] > $noAwardTestResults["noAward"])
+          $noAwardTestResults = $db->getNoAwardCompairson ( $placedId, $noAwardId );
+          fwrite ( $fptr, $noAwardTestResults ["winner"] . " Ballots place <strong>" . $shortList [$placedId] ['datum_1'] . "</strong> higher than <strong>No Award</strong><br/>\n" );
+          fwrite ( $fptr, $noAwardTestResults ["noAward"] . " Ballots place <strong>No Award</strong> higher than <strong>" . $shortList [$placedId] ['datum_1'] . "</strong><br/>\n" );
+          if ($noAwardTestResults ["winner"] > $noAwardTestResults ["noAward"])
           {
-            fwrite($fptr,"<strong>".$shortList[$placedId]['datum_1']."</strong> is confirmed as the winner<br/>\n");
+            fwrite ( $fptr, "<strong>" . $shortList [$placedId] ['datum_1'] . "</strong> is confirmed as the winner<br/>\n" );
           }
           else
           {
-            fwrite($fptr,"<strong>".$shortList[$placedId]['datum_1']."</strong> <em>fails</em> the No Award test and is not a winner<br/>\n");
+            fwrite ( $fptr, "<strong>" . $shortList [$placedId] ['datum_1'] . "</strong> <em>fails</em> the No Award test and is not a winner<br/>\n" );
           }
-
-          $db->addBallotCount($placedId,$placement,$round+1,0);
-          $rankedHigher[] = $placedId;
+          // Add the count to the database, then add the newly placed into $rankedHigher.
+          $db->addBallotCount ( $placedId, $placement, $round + 1, 0 );
+          $rankedHigher [] = $placedId;
         }
-        fwrite($fptr,"        </P>\n");
+        fwrite ( $fptr, "        </P>\n" );
         $done = true;
-        if($placement == 1)
+        if ($placement == 1)
         {
           $awardWinner = $highest;
         }
-        $placement += count($placed);
+        $placement += count ( $placed );
       }
-      else
+      else // Highest was winner of this place, eliminate the lowest.
       {
-        fwrite($fptr,"        <P>No Majority: Eliminting ".$shortList[$lowest]['datum_1']."</P>\n");
-        flush();
+        fwrite ( $fptr, "        <P>No Majority: Eliminting " . $shortList [$lowest] ['datum_1'] . "</P>\n" );
+        flush ();
 
-        $excluded[] = $lowest;
+        $excluded [] = $lowest;
       }
 
       $round += 1;
-    }
-    while (!$done);
+    } while ( ! $done );
   }
 }
 
 // If we get here, we should be writing to a file
-$fptr = fopen('voteReport.html','w');
+$fptr = fopen ( 'voteReport.html', 'w' );
 
-if(!$fptr)
+if (! $fptr)
 {
-  exit(1);
+  exit ( 1 );
 }
 
-
 $html = <<<EOT
-<!-- Writen by Ronald B. Oakes, Copyright 2011 assigned to Chicago Worldcon Bid Inc. -->
+<!-- Written by Ronald B. Oakes, copyright 2011 - 2022
+ * Rights assigned to Worldcon Intellectual Property, A California Nonprofit Corporation
+ * For the exclusive of the World Science Fiction convention for purposes of administering the Hugo Awards
+ * All other uses are forbidden without explicit permission from the author and Worldcon Intellection Property. -->
 <HTML>
 <HEAD>
 <TITLE>Hugo Nomination Administration</TITLE>
@@ -281,44 +314,44 @@ $html = <<<EOT
 
 <BR/>
 EOT;
-fwrite($fptr,$html);
+fwrite ( $fptr, $html );
 
+$categoryData = $db->getCategoryInfo ();
 
-  $categoryData = $db->getCategoryInfo();
+date_default_timezone_set ( 'America/Los_Angeles' );
+$startDate = date ( 'l jS \of F Y h:i:s A' );
+fwrite ( $fptr, "<p>Report Generation started at: $startDate</p>\n" );
 
-  date_default_timezone_set('America/Los_Angeles');
-  $startDate = date('l jS \of F Y h:i:s A');
-  fwrite($fptr,"<p>Report Generation started at: $startDate</p>\n");
+foreach ( $categoryData as $id => $data )
+{
+  getVoteReport ( $id );
+  fwrite ( $fptr, "<HR/>\n" );
+}
 
-  foreach($categoryData as $id => $data)
-  {
-    getVoteReport($id);
-    fwrite($fptr,"<HR/>\n");
-  }
+// Report done, notify hugo admins
+$emailText = "A Hugo Award Voting Report was generate starting at $startDate.\n\n";
+$emailText .= "It is now available at " . WSFS_HUGO_FILE_URL . "/admin/voteReport.html\n";
 
-  // Report done, notify hugo admins
-  $emailText  = "A Hugo Award Voting Report was generate starting at $startDate.\n\n";
-  $emailText .= "It is now available at ".WSFS_HUGO_FILE_URL."/admin/voteReport.html\n";
+// Update the email information to send this information to and from the approprate people.
 
-  $email = 'ron@ron-oakes.us';
+$email = 'ron@ron-oakes.us';
 
-  $sendername = 'hugadmin@midamericon2.org';
-  $fromemail  = 'Hugo Vote Report Generated';
-  $senderemail = 'hugopin@midamericon2.org';
-  DEFINE('MAIL_DOMAIN','@midamericon2.org');
+$sendername = 'hugadmin@midamericon2.org';
+$fromemail = 'Hugo Vote Report Generated';
+$senderemail = 'hugopin@midamericon2.org';
+DEFINE ( 'MAIL_DOMAIN', '@midamericon2.org' );
 
-  $headers = "From: ".$sendername." <".trim($fromemail).">";
+$headers = "From: " . $sendername . " <" . trim ( $fromemail ) . ">";
 
-  fwrite($fptr,"<!-- \$headers = $headers -->\n");
+fwrite ( $fptr, "<!-- \$headers = $headers -->\n" );
 
-  $result = mail($email,'2015 Hugo Vote Report',$emailText,$headers);
-
+$result = mail ( $email, '2015 Hugo Vote Report', $emailText, $headers );
 
 $html = <<<EOT
 </BODY>
 </HTML>
 
 EOT;
-fwrite($fptr,$html);
+fwrite ( $fptr, $html );
 
 ?>
