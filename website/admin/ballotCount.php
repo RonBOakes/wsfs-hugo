@@ -1,10 +1,14 @@
 <?PHP
 // Originally Writen by Ronald B. Oakes, Copyright 2012 assigned to Chicago Worldcon Bid Inc.
 
-/* Written by Ronald B. Oakes, copyright 2015
+/* Written by Ronald B. Oakes, copyright 2015, 2022
    Rights assigned to Worldcon Intellectual Property, A California Nonprofit Corporation
    For the exclusive of the World Science Fiction convention for purposes of administering the Hugo Awards
    All other uses are forbidden without explicit permission from the author and Worldcon Intellection Property.
+*/
+
+/**
+  Reports the number of unique nominators for each Hugo Award category.
 */
 
   session_start();

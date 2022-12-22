@@ -1,14 +1,22 @@
 <?PHP
-/* Written by Ronald B. Oakes, copyright 2014, Updated 2015
+/* Written by Ronald B. Oakes, copyright 2014, Updated 2015, 2022
    Rights assigned to Worldcon Intellectual Property, A California Nonprofit Corporation
    For the exclusive of the World Science Fiction convention for purposes of administering the Hugo Awards
    All other uses are forbidden without explicit permission from the author and Worldcon Intellection Property.
+*/
+/**
+  Show a report of the raw Hugo Award voting ballots.
 */
   session_start();
   require_once('library.php');
 
   $db = new database((isset($_POST['retro_hugo'])));
 
+/**
+  Generate a menu for selecting the category being displayed.
+  @param $categoryId The currently selected category
+  @return The HTML for the category selection form.
+*/
   function categoryMenu($categoryId)
   {
     global $db;
@@ -33,10 +41,16 @@
     print('    </FORM>'."\n");
   }
 
+/**
+  Build the ballot table
+  @param $categoryId The selected Hugo Award category
+  @return The HTML for the ballot table.
+*/
   function getBallot($categoryId)
   {
     global $db;
 
+    // Get the category information and votes for the selected category.
     $categoryInfo = $db->getCategoryInfo();
 
     $voters = $db->getVoters($categoryId);
@@ -44,6 +58,7 @@
     print('<p>'.$categoryInfo[$categoryId]['name'].' Votes</p>'."\n");
     print('<P>Total Ballots Received: '.count($voters).'</p>'."\n");
 
+    // Loop over the voters.
     foreach ($voters as $memberId)
     {
       $votes = $db->getVoteBallot($memberId,$categoryId);
@@ -83,7 +98,10 @@
   }
 
 ?>
-<!-- Writen by Ronald B. Oakes, Copyright 2012 assigned to Chicago Worldcon Bid Inc. -->
+<!-- Written by Ronald B. Oakes, copyright 2012-2022
+   Rights assigned to Worldcon Intellectual Property, A California Nonprofit Corporation
+   For the exclusive of the World Science Fiction convention for purposes of administering the Hugo Awards
+   All other uses are forbidden without explicit permission from the author and Worldcon Intellection Property. -->
 <HTML>
   <HEAD>
     <TITLE>Hugo Nomination Administration</TITLE>

@@ -1,51 +1,54 @@
-/* Written by Ronald B. Oakes, copyright  2015, 2016
+/* Written by Ronald B. Oakes, copyright  2015, 2016, 2022
    Rights assigned to Worldcon Intellectual Property, A California Nonprofit Corporation
    For the exclusive of the World Science Fiction convention for purposes of administering the Hugo Awards
    All other uses are forbidden without explicit permission from the author and Worldcon Intellection Property.
 */
+/**
+  Library of JavaScript (ECMAscript) functions used for the Hugo Award system administrtive back-end.
+*/
 
+/**
+  Referesh the menu by returning to the top level index page (index.php)
+*/
 function refreshMenu()
 {
     var topMenu = document.topMenu;
 
-    // Change the target URL                                                                                                                                                                                            
+    // Change the target URL
     topMenu.action = "index.php";
 
     topMenu.submit();
 }
 
+/**
+  Go to the manual nomination page.
+*/
 function manualNominate()
 {
     var topMenu = document.topMenu;
 
-    // Change the target URL                                                                                                                                                                                            
+    // Change the target URL
     topMenu.action = "manualNominate.php";
 
     topMenu.submit();
 }
 
+/**
+  Go to the manual voting page.
+*/
 function manualVote()
 {
     var topMenu = document.topMenu;
 
-    // Change the target URL                                                                                                                                                                                            
+    // Change the target URL
     topMenu.action = "manualVote.php";
 
     topMenu.submit();
 }
 
-
-function gotReport()
-{
-    var topMenu = document.topMenu;
-
-    // Change the target URL                                                                                                                                                                                            
-    topMenu.action = "GameOfThronesReport.php";
-
-    topMenu.submit();
-}
-
-
+/**
+  Go to the ballot count page
+*/
 function ballotCount()
 {
     var topMenu = document.topMenu;
@@ -57,6 +60,10 @@ function ballotCount()
     topMenu.submit();
 }
 
+/**
+  Go to the cross-category report page
+  @warning The nomination normalization feature has not been used since Chicon 7, if then.
+*/
 function crossCategory()
 {
     var topMenu = document.topMenu;
@@ -68,216 +75,73 @@ function crossCategory()
     topMenu.submit();
 }
 
+/**
+  Go to the page for managing the Hugo Award categories.
+*/
 function viewEditCategories()
 {
     var topMenu = document.topMenu;
 
-    // Change the target URL                                                                                                                                                                                            
+    // Change the target URL
     topMenu.action = "viewEditCategories.php";
 
     topMenu.submit();
 }
 
-function viewEditMemberships()
-{
-    var topMenu = document.topMenu;
-
-    // Change the target URL                                                                                                                                                                                            
-    topMenu.action = "viewEditMemberships.php";
-
-    topMenu.submit();
-}
-
-function viewEditChiconMemberships()
-{
-    var topMenu = document.topMenu;
-
-    // Change the target URL                                                                                                                                                                                            
-    topMenu.action = "viewEditChiconMemberships.php";
-
-    topMenu.submit();
-}
-
-function uploadMemberships()
-{
-    var topMenu = document.topMenu;
-
-    // Change the target URL                                                                                                                                                                                            
-    topMenu.action = "uploadMemberships.php";
-
-    topMenu.submit();
-}
-
-function uploadChiconMemberships()
-{
-    var topMenu = document.topMenu;
-
-    // Change the target URL                                                                                                                                                                                            
-    topMenu.action = "uploadVotingMemberships.php";
-
-    topMenu.submit();
-}
-
-function generatePin()
-{
-    var topMenu = document.topMenu;
-
-    // Change the target URL                                                                                                                                                                                            
-    topMenu.action = "generateMissingPins.php";
-
-    var result = confirm("Once Generated, PINs cannot be changed for newly uploaded data");
-
-    if(result==true)
-    {
-      topMenu.submit();
-    }
-}
-
-function recoverBallots(which)
-{
-    var topMenu = document.topMenu;
-
-    if(which == "verified")
-	{
-	    topMenu.action = "recoverVerifiedPartials.php";
-	}
-    else if(which == "unverified")
-	{
-	    topMenu.action = "recoverUnverifiedPartials.php";
-	}
-
-    var result = confirm("This will submit ballots that were not approved by the submittor!");
-
-    if(result==true)
-	{
-	    topMenu.submit();
-	}
-}
-
-function emailScalziPin()
-{
-    var topMenu = document.topMenu;
-    topMenu.action = "emailScaziLetter.php";
-    topMenu.submit();
-}
-
-function emailPin(version)
-{
-    var topMenu = document.topMenu;
-
-    // Change the target URL
-    if(version == "initial")
-	{
-	    topMenu.action = "emailNewPins.php";
-	}
-    else if(version == "correction")
-	{
-	    topMenu.action = "emailCorrection.php";
-	}
-    else if(version == "firstReminder")
-	{
-	    topMenu.action = "email1stReminder.php";
-	}
-    else if(version == "secondReminder")
-	{
-	    topMenu.action = "email2ndReminder.php";
-	}
-
-    var result = confirm("This will send e-mail to EVERY e-mail address not previously contacted");
-
-    if(result==true)
-    {
-      topMenu.submit();
-    }
-}
-
+/**
+  Go to the nominee maintaince page
+  @warning The nomination normalization feature has not been used since Chicon 7, if then.
+  @warning The corresponding PHP file is not currently present.
+*/
 function viewEditNominee()
 {
     var topMenu = document.topMenu;
 
-    // Change the target URL                                                                                                                                                                                            
+    // Change the target URL
     topMenu.action = "viewEditNominee.php";
 
     topMenu.submit();
 }
 
+/**
+  Go to the nominee report page
+  @warning The nomination normalization feature has not been used since Chicon 7, if then.
+  @warning The corresponding PHP file is not currently present.
+*/
 function nomineeReport()
 {
     var topMenu = document.topMenu;
 
-    // Change the target URL                                                                                                                                                                                            
+    // Change the target URL
     topMenu.action = "nomineeReport.php";
 
     topMenu.submit();
 }
 
-function reviewBallots()
-{
-    var topMenu = document.topMenu;
-
-    // Change the target URL                                                                                                                                                                                            
-    topMenu.action = "reviewBallots.php";
-
-    topMenu.submit();
-}
-
-function verifyBallots()
-{
-    var topMenu = document.topMenu;
-
-    // Change the target URL                                                                                                                                                                                            
-    topMenu.action = "unverifiedBallots.php";
-
-    topMenu.submit();
-}
-
-function verifyVoteBallots()
-{
-    var topMenu = document.topMenu;
-
-    // Change the target URL                                                                                                                                                                                            
-    topMenu.action = "unverifiedVotes.php";
-
-    topMenu.submit();
-}
-
+/**
+  Go to the page for regeneration of nominations.
+  @warning The nomination normalization feature has not been used since Chicon 7, if then.
+*/
 function regenerateNominees()
 {
     var topMenu = document.topMenu;
 
     var result = confirm("This will remove any changes made to the nominees through the 'View and Edit Nominee Informaiton' Form");
 
-    // Change the target URL                                                                                                                                                                                            
+    // Change the target URL
     topMenu.action = "regenerateNominees.php";
 
     topMenu.submit();
 }
 
-function updatePassword()
-{
-    var topMenu = document.topMenu;
-
-    // Change the target URL                                                                                                                                                                                            
-    topMenu.action = "updatePassword.php";
-
-    topMenu.submit();
-}
-
-function logout()
-{
-    var topMenu = document.topMenu;
-
-    // Change the target URL                                                                                                                                                                                            
-    topMenu.action = "login.php";
-    topMenu.button_pressed.value = "logout";
-
-    topMenu.submit();
-}
-
+/**
+  Go to the page for managing the Hugo Award Finalists.
+  @param id Unused.
+*/
 function manageShortlist(id)
 {
     var topMenu = document.topMenu;
-    
+
     // Change the target URL
     topMenu.action = "manageShortlist.php";
     topMenu.button_pressed.value="manageShortlist";
@@ -285,10 +149,13 @@ function manageShortlist(id)
     topMenu.submit();
 }
 
+/**
+  Go to the ballot report page
+*/
 function ballotReport()
 {
     var topMenu = document.topMenu;
-    
+
     // Change the target URL
     topMenu.action = "ballotReport.php";
     topMenu.button_pressed.value="ballotReport";
@@ -296,10 +163,13 @@ function ballotReport()
     topMenu.submit();
 }
 
+/**
+  Go to the Packet Download Report page.
+*/
 function packetDownloadReport()
 {
     var topMenu = document.topMenu;
-    
+
     // Change the target URL
     topMenu.action = "packetDownloadReport.php";
     topMenu.button_pressed.value="packetDownloadReport";
@@ -307,10 +177,13 @@ function packetDownloadReport()
     topMenu.submit();
 }
 
+/**
+  Go to the Voter Count Repor page
+*/
 function voterCountReport()
 {
     var topMenu = document.topMenu;
-    
+
     // Change the target URL
     topMenu.action = "voterCountReport.php";
     topMenu.button_pressed.value="voterCountReport";
@@ -318,11 +191,13 @@ function voterCountReport()
     topMenu.submit();
 }
 
-
+/**
+  Go to the Voting Report page
+*/
 function votingReport()
 {
     var topMenu = document.topMenu;
-    
+
     // Change the target URL
     topMenu.action = "voteReport.php";
     topMenu.button_pressed.value="voteReport";
@@ -330,10 +205,13 @@ function votingReport()
     topMenu.submit();
 }
 
+/**
+  Go to the Voting (Ballot) Export page 
+*/
 function votingExport()
 {
     var topMenu = document.topMenu;
-    
+
     // Change the target URL
     topMenu.action = "ballotExport.php";
     topMenu.button_pressed.value="ballotExport";
