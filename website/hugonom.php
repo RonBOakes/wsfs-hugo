@@ -1,20 +1,32 @@
 <?PHP
-/* Written by Ronald B. Oakes, copyright  2015, 2016, 2018
+/* Written by Ronald B. Oakes, copyright  2015, 2016, 2018, 2022
    Rights assigned to Worldcon Intellectual Property, A California Nonprofit Corporation
    For the exclusive of the World Science Fiction convention for purposes of administering the Hugo Awards
    All other uses are forbidden without explicit permission from the author and Worldcon Intellection Property.
 */
 
+/**
+  Code to build and display the Hugo Award nomination form.  This form will be built and displayed as an HTML form,
+  with a POST method.  It will be updated when Posted via the HTTP or, preferably, HTTPS protocol.  The function uses
+  information from $_POST and $_SERVER to determine if this is an initial load, or after the user has posted data.
+*/
+
 require_once('database.php');
 require_once('memberValidator.php');
 
-  // Load the nominator structure from $_POST
+/**
+  Load the nominator structure from $_POST
+  @param $wsfs_hugo_db Hugo Award database object
+  @return Hugo Award nomination structure.
+*/
   function loadNomination($wsfs_hugo_db)
   {
-
+	// Get the category information.
     $wsfs_hugo_categoryInfo = $wsfs_hugo_db->getCategoryInfo();
 
     $wsfs_hugo_nominationStruct = array();
+	
+	// Transfer the data from $_POST into $wsfs_hugo_nominationStruct, setting values were they exist to the value, to null if they do not.
     if(array_key_exists('pin',$_POST))
     {
       $wsfs_hugo_nominationStruct['pin']                   = is_null($_POST['pin'])                    ? '' : $_POST['pin'];
@@ -83,10 +95,18 @@ require_once('memberValidator.php');
     return $wsfs_hugo_nominationStruct;
   }
 
+/**
+  Update a Hugo Award nomination with the current data in the database.
+  @param $wsfs_hugo_nominationStruct Hugo Award Nomination data.
+  @param $wsfs_hugo_db Hugo Award database object.
+  @return The updated Hugo Award Nomination data.
+*/
   function updateNomination($wsfs_hugo_nominationStruct,$wsfs_hugo_db)
   {
+	// Get the category information
     $wsfs_hugo_categoryInfo = $wsfs_hugo_db->getCategoryInfo();
 
+	// Loop over each category
     foreach ($wsfs_hugo_categoryInfo as $wsfs_hugo_id => $wsfs_hugo_info)
     {
       $wsfs_hugo_nominatorId = $wsfs_hugo_nominationStruct['pin'];
@@ -96,9 +116,10 @@ require_once('memberValidator.php');
         $wsfs_hugo_nominatorId = $wsfs_hugo_matches[0];
       }
 
-
+	  // Get the current nominations.
       $wsfs_hugo_currentNoms = $wsfs_hugo_db->getNominationsForNominatior($_POST['pin'],$wsfs_hugo_id);
 
+	  // If there are too many nominations currently, remove the ones at the bottom of the list.
       if (count($wsfs_hugo_currentNoms) > 5)
       {
         $tempArray = array_reverse($wsfs_hugo_currentNoms, true);
@@ -110,6 +131,7 @@ require_once('memberValidator.php');
         $wsfs_hugo_currentNoms = array_reverse($tempArray,true);
       }
 
+	  // Populate the Hugo Award nomination structure from the current nominations.
       $wsfs_hugo_index = 0;
       foreach($wsfs_hugo_currentNoms as $wsfs_hugo_nomRecord)
       {
@@ -250,6 +272,15 @@ EOT;
     return $wsfs_hugo_pageData;
   }
 
+/**
+  Build the nomination form
+  @param $wsfs_hugo_nomination Hugo Award nomination data for this nominator
+  @param $wsfs_hugo_db Hugo Award database object.
+  @param $wsfs_hugo_formAction Action for the form submittal.  That is the URL where the form will be submitted to.
+  @param $wsfs_retro true for Retro Hugo Awards, false otherwise
+  @param $wsfs_hugo_userSubmission TODO
+  @return The HTML for the Hugo Nomination Form.
+*/
   function buildNominationForm($wsfs_hugo_nomination,$wsfs_hugo_db,$wsfs_hugo_formAction,$wsfs_retro,$wsfs_hugo_userSubmission)
   {
     global $_POST;
@@ -265,6 +296,7 @@ EOT;
     ob_end_clean();
     $wsfs_hugo_pageData .= "-->\n";
 
+	// Set the description and nomination closing time.  These need to be updated to match the current information.
     $wsfs_hugo_descriptor = "2018 Hugo Awards, Award for Best Young Adult Book, and John W. Campbell Award for Best New Writer";
     $wsfs_hugo_closing    = "Hugo Award and John W. Campbell Award nominations will close 11:59pm Pacific Daylight Time on Friday March 16, 2016.";
     if($wsfs_retro)
@@ -273,8 +305,10 @@ EOT;
       $wsfs_hugo_closing    = "Retrospective Hugo Award nominations will be close at 11:59pm Pacific Daylight Time on Friday March 16, 2018.";
     }
 
+	// Get the category information
     $wsfs_hugo_categoryInfo = $wsfs_hugo_db->getCategoryInfo();
 
+	// Get the ballot for the current nominator.
     $wsfs_hugo_ballot = $wsfs_hugo_db->getBallot($wsfs_hugo_nomination['pin']);
 
     $wsfs_hugo_pageData .= "<!-- \$wsfs_hugo_ballot \n";
@@ -284,11 +318,14 @@ EOT;
     ob_end_clean();
     $wsfs_hugo_pageData .= "-->\n";
 
+	// Populate the category order array with from the category info.
     foreach ($wsfs_hugo_categoryInfo as $wsfs_hugo_id => $wsfs_hugo_info)
     {
       $wsfs_hugo_categoryOrder[$wsfs_hugo_categoryInfo[$wsfs_hugo_id]['ballot_position']] = $wsfs_hugo_id;
     }
 
+	// Start building the page.  Note that there is embedded date and convention information that needs to be updated.
+	// Also note that this is here text, so comments must be HTML/XML encoded.
     $wsfs_hugo_pageData .= <<<EOT
     <P>
       <H1>
@@ -484,6 +521,13 @@ EOT;
     return $wsfs_hugo_pageData;
   }
 
+/**
+  Submit the completed or partially completed nominating ballot.
+  @param $wsfs_hugo_nomination Nomination data.
+  @param $wsfs_hugo_db Database object
+  @param $wsfs_retro true for Retro Hugo Awards, false otherwise
+  @return HTML/XML comment code documenting the activites carried out.
+*/
   function submitBallot($wsfs_hugo_nomination,$wsfs_hugo_db,$wsfs_retro)
   {
     global $_POST;
@@ -500,21 +544,26 @@ EOT;
 
 //    $wsfs_hugo_nominatorId = $wsfs_hugo_nomination['pin'];
 
-
+	// Get the categories and information.
     $wsfs_hugo_categoryInfo = $wsfs_hugo_db->getCategoryInfo();
 
+	// Loop over all of the categories
     foreach($wsfs_hugo_categoryInfo as $wsfs_hugo_id => $wsfs_hugo_info)
     {
+	  // If there are any nominations in the current category in this ballot - as indicated by having any content in datum_1...
       if(($wsfs_hugo_nomination[$wsfs_hugo_id][1]['datum_1'] != '') or
          ($wsfs_hugo_nomination[$wsfs_hugo_id][2]['datum_1'] != '') or
          ($wsfs_hugo_nomination[$wsfs_hugo_id][3]['datum_1'] != '') or
          ($wsfs_hugo_nomination[$wsfs_hugo_id][4]['datum_1'] != '') or 
          ($wsfs_hugo_nomination[$wsfs_hugo_id][5]['datum_1'] != ''))
       {
+		// Clear the existing nominations so that they can be replaced.
         $wsfs_hugo_pageData .= $wsfs_hugo_db->clearNominations($_POST['pin'],$wsfs_hugo_id);
 
+		// Loop over the 5 nominations.
         for($wsfs_hugo_index = 1;$wsfs_hugo_index <= 5; $wsfs_hugo_index++)
         {
+		  // If the datum_1 for the nomination is not blank, add the nomination to the database for this nominator.
           if(($wsfs_hugo_nomination[$wsfs_hugo_id][$wsfs_hugo_index]['datum_1'] != NULL) && ($wsfs_hugo_nomination[$wsfs_hugo_id][$wsfs_hugo_index]['datum_1'] != ''))
           {
             $wsfs_hugo_pageData .= $wsfs_hugo_db->addNomination($_POST['pin'],$wsfs_hugo_id,$wsfs_hugo_nomination[$wsfs_hugo_id][$wsfs_hugo_index]['datum_1'],$wsfs_hugo_nomination[$wsfs_hugo_id][$wsfs_hugo_index]['datum_2'],$wsfs_hugo_nomination[$wsfs_hugo_id][$wsfs_hugo_index]['datum_3']);
@@ -523,11 +572,13 @@ EOT;
       }
       else
       {
+		// Remove any previous nominations.
         $wsfs_hugo_pageData .= $wsfs_hugo_db->clearNominations($_POST['pin'],$wsfs_hugo_id);
       }
     }
 
 //    if($wsfs_hugo_nomination['email_ballot'])
+	// Email the ballot to the nominator.
     {
       emailBallot($wsfs_hugo_nomination,$wsfs_hugo_db,$wsfs_retro);
       // Sometimes we need to reset to retro
@@ -536,6 +587,12 @@ EOT;
     return $wsfs_hugo_pageData;
   }
 
+/**
+  Emails the ballot to the Hugo Award nominator after they submit the form.
+  @param $wsfs_hugo_nomination Hugo Award nominatioin information
+  @param $db Hugo Award database object
+  @param $wsfs_retro true if this is for Retro Hugo awards, false otherwise.
+*/
   function emailBallot($wsfs_hugo_nomination,$db,$wsfs_retro)
   {
     $ballot = $db->getBallot($wsfs_hugo_nomination['pin']);
@@ -581,6 +638,7 @@ EOT;
       }
     }
 
+	// Update the signature as needed.
     $emailText .= <<<EOT
 Thank You
     Worldcon 76 Hugo Administrators
@@ -589,7 +647,7 @@ EOT;
 
 
     $subject = "";
-
+	// Update the subject lines as needed
     if(!$wsfs_retro)
     {
       $subject = 'Your 2018 Hugo Award, John W. Campbell Award, and Award for Best Young Adult Novel Nominating Ballot';
@@ -598,6 +656,7 @@ EOT;
     {
       $subject = 'Your 1942 Retrospective Hugo Award Ballot';
     }
+	// Update the From: field as needed, as well as any other additional headers needed.
     if($email != '')
     {
       $result = mail($email,$subject,$emailText,'From: hugoadmin@worldcon76.org');
@@ -607,7 +666,13 @@ EOT;
 
   }
 
-
+/**
+  Build the Hugo Award Nomination form.
+  @param $wsfs_hugo_formAction The filename of the currently executing script, relative to the document root. That is the relative path of the web page.  Most likely comes from $_SERVER['PHP_SELF'] (Optional)
+  @param $wsfs_retro Set to true for true for Retro Hugos, false otherwise (Optional - defaults to true)
+  @param $wsfs_hugo_privlidge Set to true to execute in the privlidged mode that allows for use outside of normal nominating dates.
+  @return The HTML for the Hugo Award Nomination Form.
+*/
   function getHugoNomForm($wsfs_hugo_formAction='', $wsfs_retro = true, $wsfs_hugo_privlidge=false)
   {
     global $_POST;
@@ -635,6 +700,7 @@ EOT;
     $wsfs_hugo_nomination = loadNomination($wsfs_hugo_db);
 
     // If we're in preview add a notification
+	// NOTE: The date in this text is hard coded and will need to be updated.
     if($wsfs_hugo_db->inPreview())
     {
       $wsfs_hugo_pageData .= <<<EOT
@@ -646,6 +712,7 @@ EOT;
 EOT;
     }
 
+	// Determine what kind of form needs to be loaded based on the nomination status, and the contents of $_POST
     if((($wsfs_hugo_nominationStatus = $wsfs_hugo_db->areNominationsOpen()) != 'Hugo Award nominations are open') && (!$wsfs_hugo_db->inPreview()) && (!$wsfs_hugo_privlidge))
     {
       $wsfs_hugo_pageData = '    <H1>'.$wsfs_hugo_nominationStatus.'</H1>'."\n";
@@ -673,11 +740,11 @@ EOT;
       {
         $wsfs_hugo_pageData .= '<P><FONT COLOR="RED">Valid Membership Number and PIN, but not allowed to nominate at thist time</FONT></P>'."\n";
       }
-      else
+      else // Eligible nominator, build the form.
       {
         $wsfs_hugo_pageData .= "<!-- Found Ballot -->\n";
         $wsfs_hugo_submission = false;
-        if($_POST['phase']=='ballot')
+        if($_POST['phase']=='ballot') // If we have received a ballot, submit it which updates the comments for the web page.
         {
           $wsfs_hugo_pageData .= submitBallot($wsfs_hugo_nomination,$wsfs_hugo_db,$wsfs_retro);
           $wsfs_hugo_submission = true;
@@ -690,7 +757,7 @@ EOT;
         ob_end_clean();
         $wsfs_hugo_pageData .= "-->\n";
 
-
+		// Update the nomination data
         $wsfs_hugo_nomination = updateNomination($wsfs_hugo_nomination,$wsfs_hugo_db);
 
         $wsfs_hugo_pageData .= "<!-- after: \n";
