@@ -301,12 +301,6 @@ function editCategory(categoryId)
     popup(url, '', 800, 800);
 }
 
-function nomineeDetail(nomineeId)
-{
-    var url = "nomineeDetail.php?id=" + nomineeId;
-    popup(url, '', 800, 800);
-}
-
 function shortlistEdit(shortlistId,wsfsRetro)
 {
     var url = "shortlistDetail.php?id=" + shortlistId + "&wsfs_retro=" + wsfsRetro;
