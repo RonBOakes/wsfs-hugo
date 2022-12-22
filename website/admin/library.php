@@ -28,6 +28,10 @@ $commandLineSession = false;
 
 // Admin Library routines
 
+/**
+  Generates the main menu for the Hugo Awards system administration screen.
+  @param $year The year of the Worldcon and Hugo Awards being administerd.
+*/
 function menu($year = 2015)
 {
   print("<!-- \$_POST:\n");
@@ -100,6 +104,10 @@ function menu($year = 2015)
 <?PHP
 }
 
+/**
+  Build a table of number of unique individuals who placed a nomination in the specified category.
+  @param $categoryId The database key for the Hugo Award category.
+*/
 function countTable($categoryId)
 {
   global $db;
@@ -120,6 +128,16 @@ function countTable($categoryId)
 <?PHP
 }
 
+/**
+  Carry out a count for the ranked perferential voting on the specified Hugo Award category, excluding selected finalists.
+  
+  
+  
+  @param $categoryId The Hugo Award category (database key) to be counted
+  @param $excluded An array or comma separated string containing the finalists in that category to exclude.  Used for subsequent placement.
+  @param $voteDetail Will be populated with a complex hash containing details of the counts for each non-excluded finalist
+  @param $maxRank Will be populated with the most votes received by any finalist in this count.
+*/
 function voteRound($categoryId,$excluded,&$voteDetail,&$maxRank)
 {
   global $db;
@@ -138,6 +156,7 @@ function voteRound($categoryId,$excluded,&$voteDetail,&$maxRank)
   $voteTally = array();
 //  $voteDetail = array();
 
+// Build an array to contain the results for the finalists remaining after removing the ones excluded.
   foreach ($shortList as $id => $info)
   {
     if(!in_array($id,$excluded))
@@ -153,10 +172,12 @@ function voteRound($categoryId,$excluded,&$voteDetail,&$maxRank)
 
   $maxRank = -1;
 
+// Get the voters remaining for this category after removing those who only voted for excluded finalists.
   $remainingVoters = $db->getRemainingVoters($categoryId,$excluded);
 
   foreach ($remainingVoters as $voterId)
   {
+	// Get the voter's current top vote in this category.
     $voteData = $db->getCurrentVote($voterId,$categoryId,$excluded);
 
 //    print("\$voterId: $voterId, \$vote: $vote<br/>\n");
@@ -179,6 +200,15 @@ function voteRound($categoryId,$excluded,&$voteDetail,&$maxRank)
   return $voteTally;
 }
 
+/**
+  Generate a list of nominating ballots either by "initial" or "count."  By initial sorts them by the first initial of the second (family) name, and by count sorts it by the number of nominations made.
+  
+  @warning The provisional nominations functionality has not been used since Chicon 7, if then.
+  
+  @param $byWhat A string, either "initial" or "count" to determine what kind of list to produce
+  @param $reference The initial to use for the list if listing by initial, or the cut off count if by count.
+  @param $notApproved Unused.
+*/
   function listBallots($byWhat,$reference,$notApproved)
   {
     global $db;
