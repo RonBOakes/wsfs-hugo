@@ -1,10 +1,24 @@
 <?PHP
-/* Written by Ronald B. Oakes, copyright 2014, Updated 2015, 2016
+/* Written by Ronald B. Oakes, copyright 2014-2022
    Rights assigned to Worldcon Intellectual Property, A California Nonprofit Corporation
    For the exclusive of the World Science Fiction convention for purposes of administering the Hugo Awards
    All other uses are forbidden without explicit permission from the author and Worldcon Intellection Property.
 */
+/**
+ * Main program for generating the Hugo Award voting results.
+ * This program can be used to cross-check the voting results
+ * generated from other programs under the theory that if two programs developed independently by different developers produce
+ * the same results, then the results are good and hand checking is not required.
+ *
+ * This program can be run from the command line. This option is recommended. It is also recommended that, if possible, that
+ * it is run on an off-line server with its own copy of the database to avoid impacting any other services using either the web
+ * server or the database server. In past experience running on a PC class machine it can take several hours to generate results
+ * for an entire Hugo Awards.
+ *
+ * @warning It is not known as of December 23, 2022 if this is the working version of this code.
+ */
 
+// Update these per the current settings for the administering Worldcon's website
 define('WSFS_HUGO_VOTE_URL','http://mac2-hugo01.midamericon2.org/vote.php');
 define('WSFS_HUGO_FILE_URL','http://mac2-hugo01.midamericon2.org');
 

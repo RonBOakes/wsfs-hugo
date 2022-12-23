@@ -1,12 +1,22 @@
 <?PHP
-/* Written by Ronald B. Oakes, copyright  2015, 2016, 2018
+/* Written by Ronald B. Oakes, copyright  2015-2022
    Rights assigned to Worldcon Intellectual Property, A California Nonprofit Corporation
    For the exclusive of the World Science Fiction convention for purposes of administering the Hugo Awards
    All other uses are forbidden without explicit permission from the author and Worldcon Intellection Property.
 */
-
+/**
+ * Source for building the Hugo Voters Packet download page.
+ */
 require_once('database.php');
 
+/**
+ * Gets the header for the Hugo Voters Packet page.  This header contains the JavaScript code and other 
+ * information that needs to be embedded into the HTTP/HTTPS HTML page header.
+ * @param string $formAction The form action for the web page, that is the URL for the page.  Optional
+ * @param boolean $wsfs_retro true if this is for Retro Hugo Awards, false otherwise.  Optional
+ * @param boolean $privlidge true to ignore the open and close dates, false otherwise.  Optional
+ * @return string
+ */
   function getHugoPacketHeader($formAction='', $wsfs_retro = false, $privlidge=false)
   {
     if($formAction == '')

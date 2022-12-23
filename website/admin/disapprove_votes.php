@@ -8,7 +8,6 @@
 /**
  * AJAX backend function for approving votes.
  *
- * Does not actually do anything.
  */
 require_once ('library.php');
 

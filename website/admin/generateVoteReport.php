@@ -15,6 +15,8 @@
  * it is run on an off-line server with its own copy of the database to avoid impacting any other services using either the web
  * server or the database server. In past experience running on a PC class machine it can take several hours to generate results
  * for an entire Hugo Awards.
+ *
+ * @warning It is not known as of December 23, 2022 if this is the working version of this code.
  */
 define ( 'WSFS_HUGO_FILE_URL', 'http://midamericon2.org/hugo' );
 define ( 'WSFS_HUGO_FORM_URL', 'http://midamericon2.org/hugo-awards/voting' );
