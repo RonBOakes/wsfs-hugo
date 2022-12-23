@@ -1,11 +1,17 @@
 <?PHP
 // Originally Writen by Ronald B. Oakes, Copyright 2011 assigned to Chicago Worldcon Bid Inc.
 
-/* Written by Ronald B. Oakes, copyright 2014, Updated 2015
+/* Written by Ronald B. Oakes, copyright 2014-2022
    Rights assigned to Worldcon Intellectual Property, A California Nonprofit Corporation
    For the exclusive of the World Science Fiction convention for purposes of administering the Hugo Awards
    All other uses are forbidden without explicit permission from the author and Worldcon Intellection Property.
 */
+/**
+ * Provides the main page for managing the nomination nomrmalization and approval process
+ * @warning @warning The nomination normalization functionality has not been used since Chicon 7, if then.
+ * 
+ * This whole page relies on Chicon 7 membership data formats and database functions that no longer exist.
+ */
 
   session_start();
   require_once('library.php');
@@ -14,6 +20,11 @@
 
   $db = new Database();
 
+  /**
+   * Get the memberships for the current set of nominations to look at.
+   * @warning This function will fail due to calling a missing function.
+   * @return array A List of members
+   */
   function fetchMemberships()
   {
     global $db;
@@ -47,6 +58,9 @@
     return $membershipList;
   }
 
+  /**
+   * Build the form used to search by member name.
+   */
   function buildSearchForm()
   {
 ?>
@@ -85,6 +99,9 @@
 <?PHP
   }
 
+  /**
+   * Build the membership table
+   */
   function buildMembershipTable()
   {
     global $db;
@@ -163,6 +180,10 @@
 
   }
 
+  /**
+   * Builds a menu for searching by last initial
+   * @param string $lastInitial The initial from the family name.
+   */
   function initialMenu($lastInitial)
   {
     print('    <FORM NAME="initials" ID="initials" ACTION="reviewBallots.php" METHOD="post" >'."\n");
@@ -194,6 +215,9 @@
 
   }
 
+  /**
+   * Build a navigation menu
+   */
   function buildNavMenu()
   {
     global $initial;
