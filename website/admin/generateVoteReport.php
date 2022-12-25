@@ -15,8 +15,6 @@
  * it is run on an off-line server with its own copy of the database to avoid impacting any other services using either the web
  * server or the database server. In past experience running on a PC class machine it can take several hours to generate results
  * for an entire Hugo Awards.
- *
- * @warning It is not known as of December 23, 2022 if this is the working version of this code.
  */
 define ( 'WSFS_HUGO_FILE_URL', 'http://midamericon2.org/hugo' );
 define ( 'WSFS_HUGO_FORM_URL', 'http://midamericon2.org/hugo-awards/voting' );
@@ -86,7 +84,7 @@ function getVoteReport($categoryId)
 {
   global $db, $fptr;
 
-  fwrite( $fptr, "<!-- Getting the vote report for $categoryId -->\n");
+  fwrite ( $fptr, "<!-- Getting the vote report for $categoryId -->\n" );
   // Get the category information and write the header into the report.
   $categoryInfo = $db->getCategoryInfo ();
 
@@ -113,14 +111,14 @@ function getVoteReport($categoryId)
   // Loop over the number of expected places.
   for($placement = 1; $placement < count ( $shortList );)
   {
-    fwrite ( $fptr, "<!-- Placement: $placement -->\n");
+    fwrite ( $fptr, "<!-- Placement: $placement -->\n" );
     fwrite ( $fptr, "<HR/>\n" );
 
     $done = false;
 
     // Exclude all of the entries already ranked higher.
     $excluded = $rankedHigher;
-    fwrite( $fptr, "<!-- excluding: " . implode($excluded,",") . "-->\n");
+    fwrite ( $fptr, "<!-- excluding: " . implode ( $excluded, "," ) . "-->\n" );
 
     $round = 1;
 
@@ -129,10 +127,10 @@ function getVoteReport($categoryId)
       $voteDetail = array ();
       $debugText = "";
       // Vote a round.
-      $voteTally = voteRound ( $categoryId, $excluded, $voteDetail, $maxRank, $debugText);
-      fwrite ($fptr, $debugText);
-      fwrite ($fptr, "<!-- Raw results of the round:\n". var_export($voteTally, true) . "\n-->\n");
-      fwrite ($fptr, "<!-- Vote Detail of the round:\n". var_export($voteDetail, true) . "\n-->\n");
+      $voteTally = voteRound ( $categoryId, $excluded, $voteDetail, $maxRank, $debugText );
+      fwrite ( $fptr, $debugText );
+      fwrite ( $fptr, "<!-- Raw results of the round:\n" . var_export ( $voteTally, true ) . "\n-->\n" );
+      fwrite ( $fptr, "<!-- Vote Detail of the round:\n" . var_export ( $voteDetail, true ) . "\n-->\n" );
       $votesCast = 0;
 
       // Count the votes cast in this round and determine the majority.
@@ -204,8 +202,8 @@ EOT;
       // Determine the lowest, breaking ties.
       $lowest = array_pop ( $rankOrder );
       $nextLowest = array_pop ( $rankOrder );
-      fwrite( $fptr, "<!-- highest: $highest, lowest: $lowest, next lowest: $nextLowest --> \n");
-      fwrite( $fptr, "<!-- VoteTally lowest: " . $voteTally[$lowest]. " Next Lowest: " . $voteTally[$nextLowest] . " -->\n");
+      fwrite ( $fptr, "<!-- highest: $highest, lowest: $lowest, next lowest: $nextLowest --> \n" );
+      fwrite ( $fptr, "<!-- VoteTally lowest: " . $voteTally [$lowest] . " Next Lowest: " . $voteTally [$nextLowest] . " -->\n" );
       if ($voteTally [$lowest] == $voteTally [$nextLowest]) // Tie for lowest, need to break
       {
         $tied = array (

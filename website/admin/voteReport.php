@@ -15,7 +15,7 @@
  * server or the database server. In past experience running on a PC class machine it can take several hours to generate results
  * for an entire Hugo Awards.
  *
- * @warning It is not known as of December 23, 2022 if this is the working version of this code.
+ * @warning This is <b>NOT</b> the working version of this code.  Use generateVoteReport.php to generate voting results.
  */
 
 // Update these per the current settings for the administering Worldcon's website

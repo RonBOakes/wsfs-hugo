@@ -150,7 +150,7 @@ function countTable($categoryId)
  *          Will be populated with the most votes received by any finalist in this count.
  * @param $debugText String
  *          Will be populated with text to be printed to aid with debugging.
- * @return A hash containing the vote data
+ * @return array A hash containing the vote data
  */
 function voteRound($categoryId, $excluded, &$voteDetail, &$maxRank, &$debugText)
 {
