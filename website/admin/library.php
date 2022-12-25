@@ -148,8 +148,11 @@ function countTable($categoryId)
  *          Will be populated with a complex hash containing details of the counts for each non-excluded finalist
  * @param $maxRank int
  *          Will be populated with the most votes received by any finalist in this count.
+ * @param $debugText String
+ *          Will be populated with text to be printed to aid with debugging.
+ * @return A hash containing the vote data
  */
-function voteRound($categoryId, $excluded, &$voteDetail, &$maxRank)
+function voteRound($categoryId, $excluded, &$voteDetail, &$maxRank, &$debugText)
 {
   global $db;
 
@@ -158,9 +161,9 @@ function voteRound($categoryId, $excluded, &$voteDetail, &$maxRank)
     $excluded = explode ( ',', $excluded );
   }
 
-  // print("<!-- \$excluded\n");
-  // var_dump($excluded);
-  // print("-->\n");
+  $debugText .= "<!-- \$excluded:\n";
+  $debugText .= var_export($excluded,true);
+  $debugText .= "\n-->\n";
 
   $shortList = $db->getShortList ( $categoryId );
 
@@ -177,21 +180,20 @@ function voteRound($categoryId, $excluded, &$voteDetail, &$maxRank)
     }
   }
 
-  // print("<!-- \$voteTally (before count):\n");
-  // var_dump($voteTally);
-  // print("<!--\n");
+  $debugText .= "<!-- \$voteTally (before count):\n";
+  $debugText .= var_export($voteTally,true);
+  $debugText .= "-->\n";
 
   $maxRank = - 1;
 
   // Get the voters remaining for this category after removing those who only voted for excluded finalists.
   $remainingVoters = $db->getRemainingVoters ( $categoryId, $excluded );
+  $debugText .= "<!-- \$remainingVoters:\n".var_export($remainingVoters,true)."\n-->\n";
 
   foreach ( $remainingVoters as $voterId )
   {
     // Get the voter's current top vote in this category.
     $voteData = $db->getCurrentVote ( $voterId, $categoryId, $excluded );
-
-    // print("\$voterId: $voterId, \$vote: $vote<br/>\n");
 
     if (($voteData ['rank'] > 0) && (! in_array ( $voteData ['short_list_id'], $excluded )))
     {

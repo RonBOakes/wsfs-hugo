@@ -86,6 +86,7 @@ function getVoteReport($categoryId)
 {
   global $db, $fptr;
 
+  fwrite( $fptr, "<!-- Getting the vote report for $categoryId -->\n");
   // Get the category information and write the header into the report.
   $categoryInfo = $db->getCategoryInfo ();
 
@@ -112,21 +113,26 @@ function getVoteReport($categoryId)
   // Loop over the number of expected places.
   for($placement = 1; $placement < count ( $shortList );)
   {
+    fwrite ( $fptr, "<!-- Placement: $placement -->\n");
     fwrite ( $fptr, "<HR/>\n" );
 
     $done = false;
 
     // Exclude all of the entries already ranked higher.
     $excluded = $rankedHigher;
+    fwrite( $fptr, "<!-- excluding: " . implode($excluded,",") . "-->\n");
 
     $round = 1;
 
     do
     {
       $voteDetail = array ();
+      $debugText = "";
       // Vote a round.
-      $voteTally = voteRound ( $categoryId, $excluded, $voteDetail, $maxRank );
-
+      $voteTally = voteRound ( $categoryId, $excluded, $voteDetail, $maxRank, $debugText);
+      fwrite ($fptr, $debugText);
+      fwrite ($fptr, "<!-- Raw results of the round:\n". var_export($voteTally, true) . "\n-->\n");
+      fwrite ($fptr, "<!-- Vote Detail of the round:\n". var_export($voteDetail, true) . "\n-->\n");
       $votesCast = 0;
 
       // Count the votes cast in this round and determine the majority.
@@ -159,8 +165,6 @@ EOT;
         fwrite ( $fptr, "        <TD>" . $count . "</TD>\n" );
         fwrite ( $fptr, "        </TR>\n" );
 
-        EOT;
-        fwrite ( $fptr, $html );
         // Update the database with the ballot count.
         $db->addBallotCount ( $shortlistId, $placement, $round, $count );
       }
@@ -184,13 +188,13 @@ EOT;
       // Loop over the finalists and write out the vote detail.
       foreach ( $voteTally as $shortlistId => $count )
       {
-        fwrite ( fptr, "                <TR>\n" );
-        fwrite ( fptr, "                  <TD>" . $shortlist [$shortlistId] ['datum_1'] . "</TD>\n" );
+        fwrite ( $fptr, "                <TR>\n" );
+        fwrite ( $fptr, "                  <TD>" . $shortList [$shortlistId] ['datum_1'] . "</TD>\n" );
         for($index = 1; $index <= $maxRank; $index ++)
         {
-          fwrite ( fptr, '<TD>' . $voteDetail [$shortlistId] [$index] . '</TD>' . "\n" );
+          fwrite ( $fptr, '<TD>' . $voteDetail [$shortlistId] [$index] . '</TD>' . "\n" );
         }
-        fwrite ( fptr, "                </TR>" );
+        fwrite ( $fptr, "                </TR>" );
       }
       fwrite ( $fptr, "      </TABLE>\n" );
 
@@ -200,7 +204,8 @@ EOT;
       // Determine the lowest, breaking ties.
       $lowest = array_pop ( $rankOrder );
       $nextLowest = array_pop ( $rankOrder );
-
+      fwrite( $fptr, "<!-- highest: $highest, lowest: $lowest, next lowest: $nextLowest --> \n");
+      fwrite( $fptr, "<!-- VoteTally lowest: " . $voteTally[$lowest]. " Next Lowest: " . $voteTally[$nextLowest] . " -->\n");
       if ($voteTally [$lowest] == $voteTally [$nextLowest]) // Tie for lowest, need to break
       {
         $tied = array (
