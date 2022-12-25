@@ -371,7 +371,7 @@ if($commandLineSession)
 
   print("<!-- \$headers = $headers -->\n");
 
-  $result = mail($email,'2015 Hugo Vote Report',$emailText,$headers);
+//  $result = mail($email,'2015 Hugo Vote Report',$emailText,$headers);
 
 }
 else
