@@ -11,7 +11,7 @@
 session_start ();
 require_once ('library.php');
 
-$db = new database ( getYear () );
+$db = new database();
 
 /**
  * Build the table showing the categories.

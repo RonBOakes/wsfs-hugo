@@ -73,7 +73,7 @@ function ProcessVoteApprovalChange(pin,checkbox)
     $firstRecord = $recordsPerPage * ($page - 1);
   }
 
-  $db = new database ( getYear () );
+  $db = new database();
 
   $votedPins = $db->getVotedPins ();
 

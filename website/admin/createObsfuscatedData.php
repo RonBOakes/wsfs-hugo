@@ -11,7 +11,7 @@
  */
 require_once ('library.php');
 
-$db = new database ( getYear () );
+$db = new database();
 
 $database = $db->getDb ();
 

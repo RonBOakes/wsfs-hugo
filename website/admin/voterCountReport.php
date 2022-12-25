@@ -10,7 +10,7 @@
   session_start();
   require_once('library.php');
 
-  $db = new database(getYear());
+  $db = new database();
 ?>
 <HTML>
   <HEAD>

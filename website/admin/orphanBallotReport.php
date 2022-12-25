@@ -22,7 +22,7 @@ require_once ('library.php');
   print (getcwd ()) ;
   print (" -->\n") ;
 
-  $db = new database ( getYear () );
+  $db = new database();
 
   // Get the orphan ballot report.
   $orphanBallotInfo = $db->getOrphanBallots ();
