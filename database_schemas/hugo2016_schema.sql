@@ -1,8 +1,18 @@
--- MySQL dump 10.19  Distrib 10.3.35-MariaDB, for Linux (x86_64)
+-- Schema for the WSFS Hugo Award Database. 
+-- Copyright (C) 2016,2024 Ronald B. Oakes
 --
--- Host: localhost    Database: hugo
--- ------------------------------------------------------
--- Server version	10.3.35-MariaDB
+-- This program is free software: you can redistribute it and/or modify it
+-- under the terms of the GNU General Public License as published by the Free
+-- Software Foundation, either version 3 of the License, or (at your option)
+-- any later version.
+--
+-- This program is distributed in the hope that it will be useful, but WITHOUT
+-- ANY WARRANTY; without even the implied warranty of  MERCHANTABILITY or
+-- FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+-- more details.
+--
+-- You should have received a copy of the GNU General Public License along with
+-- this program.  If not, see <http://www.gnu.org/licenses/>.
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;

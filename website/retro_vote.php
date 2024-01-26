@@ -1,9 +1,22 @@
 <?php
-/* Written by Ronald B. Oakes, copyright  2016
-   Rights assigned to Worldcon Intellectual Property, A California Nonprofit Corporation
-   For the exclusive of the World Science Fiction convention for purposes of administering the Hugo Awards
-   All other uses are forbidden without explicit permission from the author and Worldcon Intellection Property.
-*/
+/*
+ * Sample PHP page for Retro Hugo Award Voting.
+ * Copyright (C) 2016, 2018, 2024 Ronald B. Oakes
+ *
+ * This program is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of  MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+ 
       define('WSFS_HUGO_VOTE_URL','https://www.worldcon76.org/hugo/retro_vote.php');
       define('WSFS_HUGO_FILE_URL','https://www.worldcon76.org/hugo');
 

@@ -2,6 +2,7 @@
     /**
     * Copyright 2013 Steven R. Staton (http://www.deltos.com/hugo-awards)
     * This package is dedicated to LoneStarCon3 and Bill Parker.
+    * Portions copyright 2015-2024 Ronald B. Oakes
     *
     * This program is free software: you can redistribute it and/or modify
     * it under the terms of the GNU General Public License as published by
@@ -16,12 +17,6 @@
     * You should have received a copy of the GNU General Public License
     * along with this program.  If not, see <http://www.gnu.org/licenses/>.
     **/
-
-/* Portion written by Ronald B. Oakes, copyright  2015, 2016
-   Rights assigned to Worldcon Intellectual Property, A California Nonprofit Corporation
-   For the exclusive of the World Science Fiction convention for purposes of administering the Hugo Awards
-   All other uses are forbidden without explicit permission from the author and Worldcon Intellection Property.
-*/
 
      require_once('./database.php');
 

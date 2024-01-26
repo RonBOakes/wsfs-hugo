@@ -1,13 +1,24 @@
+// Program for generating 20,000 random PINs/Passwords for the WSFS Hugo Program
+// Copyright (C) 2018,2022,2024 Ronald B. Oakes
+//
+// This program is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by the Free
+// Software Foundation, either version 3 of the License, or (at your option)
+// any later version.
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of  MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+// more details.
+//
+// You should have received a copy of the GNU General Public License along with
+// this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 //  main.cpp
 //  PINGenerator
 //
 //  Created by Ronald Oakes on 1/4/18.
 //  Comments and other information modified on 12/20/2022
-//  Copyright © 2018,2022 Ronald Oakes. All rights assigned to Worldcon Intellectual Property, A California Nonprofit Corporation
-//  For the exclusive of the World Science Fiction convention for purposes of administering the Hugo Awards
-//  All other uses are forbidden without explicit permission from the author and Worldcon Intellection Property.
-//
 
 /*
  This program generates 20,000 unique random PINs to be used with Hugo Award Voting

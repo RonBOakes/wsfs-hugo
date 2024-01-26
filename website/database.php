@@ -1,16 +1,25 @@
 <?PHP
 /*
- * Written by Ronald B. Oakes, copyright 2015-2022
+ * Copyright (C) 2015-2024 Ronald B. Oakes
  *
- * Rights assigned to Worldcon Intellectual Property, A California Nonprofit Corporation
- * For the exclusive of the World Science Fiction convention for purposes of administering the Hugo Awards
- * All other uses are forbidden without explicit permission from the author and Worldcon Intellection Property.
+ * This program is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of  MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  * This file contains the database class.
  * It encapsulates all of the functions for interacting with the Hugo Award
- * database schema intitially developed by Ron Oakes for Chicon 7 and subsequently used for at least Loncon 3, Sasquan,
+ * database schema initially developed by Ron Oakes for Chicon 7 and subsequently used for at least Loncon 3, Sasquan,
  * MidAmerCon II, and Worldcon 76 with modifications.
  *
  * Given the intended object oriented design of the overall system, another class that implements the same members and

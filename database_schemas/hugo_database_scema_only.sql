@@ -1,11 +1,18 @@
--- phpMyAdmin SQL Dump
--- version 4.0.10deb1
--- http://www.phpmyadmin.net
+-- Schema for the WSFS Hugo Award Database. 
+-- Copyright (C) 2016,2024 Ronald B. Oakes
 --
--- Host: mac2-db02.midamericon2.org:3306
--- Generation Time: Aug 22, 2016 at 03:43 PM
--- Server version: 5.6.23-log
--- PHP Version: 5.5.9-1ubuntu4.17
+-- This program is free software: you can redistribute it and/or modify it
+-- under the terms of the GNU General Public License as published by the Free
+-- Software Foundation, either version 3 of the License, or (at your option)
+-- any later version.
+--
+-- This program is distributed in the hope that it will be useful, but WITHOUT
+-- ANY WARRANTY; without even the implied warranty of  MERCHANTABILITY or
+-- FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+-- more details.
+--
+-- You should have received a copy of the GNU General Public License along with
+-- this program.  If not, see <http://www.gnu.org/licenses/>.
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
