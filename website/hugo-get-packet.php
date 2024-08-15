@@ -21,8 +21,8 @@
     
     require 'aws.phar';
     
-    $key = 'AKIAI2SDYFV4O4WDXXXX';  # Amazon S3 key (garbled, but for example)
-    $secret = 'lveccaxKPF11Aqmk0TNDEmqaMO32MUEbdZCVXXXX'; # Amazon S3 secret key (garbled)
+    $key = '';  # Amazon S3 key (garbled, but for example)
+    $secret = ''; # Amazon S3 secret key (garbled)
     
     $s3 = new AmazonS3($key, $secret);
     

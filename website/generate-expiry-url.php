@@ -29,8 +29,8 @@ header ( 'Content-Type: application/json' );
 
 // The first three need to be updated to reflect the current Amazon S3 settings for the current Hugo Awards Voter's Packet
 $BUCKET_NAME = 'worldcon76-hugo-packet';
-$ARCHIVE_KEY = 'AKIAJISI5TEK2QJ4FSFQ';
-$SECRET_KEY = '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';
+$ARCHIVE_KEY = '';
+$SECRET_KEY = '';
 $TTL = 60; // Time-to-live in seconds.
 
 // Internal database of PINs that require longer TTL value
